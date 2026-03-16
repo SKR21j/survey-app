@@ -1,0 +1,24 @@
+# Dependencies
+node_modules/
+target/
+build/
+dist/
+
+# Environment files (keep .env.example, ignore actual secrets)
+.env
+
+# Logs
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+*.iml
+
+# Docker volumes
+postgres_data/
+pgadmin_data/

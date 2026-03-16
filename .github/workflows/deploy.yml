@@ -50,8 +50,8 @@ jobs:
             # Pull latest images
             docker compose pull
 
-            # Run database migrations (handled by Spring Boot Flyway on startup)
-            echo "Database migrations will run automatically on backend startup"
+            # Schema updates are handled automatically by Hibernate DDL-auto on backend startup
+            echo "Schema updates will run automatically on backend startup"
 
             # Rolling restart
             docker compose up -d --no-deps backend
@@ -104,8 +104,8 @@ jobs:
             # Pull latest images
             docker compose pull
 
-            # Run database migrations
-            echo "Database migrations will run automatically on backend startup"
+            # Schema updates are handled automatically by Hibernate DDL-auto on backend startup
+            echo "Schema updates will run automatically on backend startup"
 
             # Zero-downtime rolling restart
             docker compose up -d --no-deps backend

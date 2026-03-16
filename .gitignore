@@ -9,6 +9,18 @@ dist/
 
 # Logs
 *.log
+# Maven build output
+backend/target/
+target/
+
+# IDE files
+.idea/
+*.iml
+*.iws
+*.ipr
+.classpath
+.project
+.settings/
 
 # OS files
 .DS_Store
@@ -22,3 +34,11 @@ Thumbs.db
 # Docker volumes
 postgres_data/
 pgadmin_data/
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Logs
+*.log
+logs/

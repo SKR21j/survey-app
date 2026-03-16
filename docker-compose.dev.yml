@@ -1,0 +1,89 @@
+version: '3.9'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: survey_db
+      POSTGRES_USER: surveyuser
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-survey_secure_password}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - survey-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U surveyuser -d survey_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    restart: unless-stopped
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@survey-app.local
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD:-admin}
+    ports:
+      - "5050:80"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - survey-network
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+
+  backend:
+    build:
+      context: backend
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+      - "5005:5005"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/survey_db
+      SPRING_DATASOURCE_USERNAME: surveyuser
+      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD:-survey_secure_password}
+      JWT_SECRET: ${JWT_SECRET:-dev_jwt_secret_key_change_in_production}
+      JWT_EXPIRATION: ${JWT_EXPIRATION:-86400000}
+      SPRING_PROFILES_ACTIVE: dev
+      JAVA_TOOL_OPTIONS: "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - survey-network
+    volumes:
+      - ./backend:/app
+      - maven_cache:/root/.m2
+
+  frontend:
+    build:
+      context: frontend
+      dockerfile: Dockerfile
+      target: dev
+    restart: unless-stopped
+    ports:
+      - "3000:5173"
+    environment:
+      VITE_API_BASE_URL: http://localhost:8080
+    depends_on:
+      - backend
+    networks:
+      - survey-network
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+
+volumes:
+  postgres_data:
+  pgadmin_data:
+  maven_cache:
+
+networks:
+  survey-network:
+    driver: bridge

@@ -13,6 +13,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,8 +30,25 @@ public class SurveyService {
     private final SurveyRepository surveyRepository;
     private final UserRepository userRepository;
 
-    public Page<Survey> getActiveSurveys(Pageable pageable) {
-        return surveyRepository.findByActiveTrue(pageable);
+    public Page<Survey> getVisibleSurveys(Pageable pageable) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication == null || authentication instanceof AnonymousAuthenticationToken) {
+            return surveyRepository.findByActiveTrue(pageable);
+        }
+
+        User currentUser = userRepository.findByUsername(authentication.getName())
+                .orElse(null);
+
+        if (currentUser == null) {
+            return surveyRepository.findByActiveTrue(pageable);
+        }
+
+        if (currentUser.getRole() == User.Role.ADMIN) {
+            return surveyRepository.findAll(pageable);
+        }
+
+        return surveyRepository.findByActiveTrueOrCreatedById(currentUser.getId(), pageable);
     }
 
     public Survey getSurveyById(Long id) {

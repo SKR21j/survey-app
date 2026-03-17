@@ -10,4 +10,5 @@ import org.springframework.stereotype.Repository;
 public interface SurveyRepository extends JpaRepository<Survey, Long> {
     Page<Survey> findByActiveTrue(Pageable pageable);
     Page<Survey> findByCreatedById(Long userId, Pageable pageable);
+    Page<Survey> findByActiveTrueOrCreatedById(Long userId, Pageable pageable);
 }

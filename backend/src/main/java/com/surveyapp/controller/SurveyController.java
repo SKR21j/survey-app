@@ -24,9 +24,9 @@ public class SurveyController {
     private final SurveyService surveyService;
 
     @GetMapping
-    @Operation(summary = "Get all active surveys")
+    @Operation(summary = "Get visible surveys")
     public ResponseEntity<Page<Survey>> getSurveys(Pageable pageable) {
-        return ResponseEntity.ok(surveyService.getActiveSurveys(pageable));
+        return ResponseEntity.ok(surveyService.getVisibleSurveys(pageable));
     }
 
     @GetMapping("/{id}")

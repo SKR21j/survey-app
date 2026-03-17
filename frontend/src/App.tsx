@@ -4,6 +4,7 @@ import Header from './components/Common/Header';
 import HomePage from './pages/HomePage';
 import DashboardPage from './pages/DashboardPage';
 import SurveyPage from './pages/SurveyPage';
+import SurveyResponsesPage from './pages/SurveyResponsesPage';
 import NotFoundPage from './pages/NotFoundPage';
 import Login from './components/Auth/Login';
 import Register from './components/Auth/Register';
@@ -23,6 +24,14 @@ export default function App() {
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
                 <Route path="/surveys/:id" element={<SurveyPage />} />
+                <Route
+                  path="/surveys/:id/responses"
+                  element={
+                    <ProtectedRoute>
+                      <SurveyResponsesPage />
+                    </ProtectedRoute>
+                  }
+                />
                 <Route
                   path="/dashboard"
                   element={

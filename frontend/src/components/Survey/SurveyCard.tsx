@@ -64,6 +64,14 @@ export default function SurveyCard({ survey, onDeleted }: SurveyCardProps) {
         )}
         {canEditSurvey && (
           <Link
+            to={`/surveys/${survey.id}/responses`}
+            className="flex-1 text-center bg-blue-600 text-white text-sm px-3 py-1.5 rounded-md hover:bg-blue-700 transition-colors"
+          >
+            Check Responses
+          </Link>
+        )}
+        {canEditSurvey && (
+          <Link
             to={`/surveys/${survey.id}/edit`}
             className="flex-1 text-center border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-200 text-sm px-3 py-1.5 rounded-md hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
           >

@@ -36,16 +36,16 @@ public class SurveyController {
     }
 
     @PostMapping
-    @PreAuthorize("hasRole('ADMIN')")
-    @Operation(summary = "Create a new survey (Admin only)", security = @SecurityRequirement(name = "bearerAuth"))
+    @PreAuthorize("isAuthenticated()")
+    @Operation(summary = "Create a new survey", security = @SecurityRequirement(name = "bearerAuth"))
     public ResponseEntity<Survey> createSurvey(@Valid @RequestBody SurveyDTO dto) {
         Survey survey = surveyService.createSurvey(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(survey);
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
-    @Operation(summary = "Update a survey (Admin only)", security = @SecurityRequirement(name = "bearerAuth"))
+    @PreAuthorize("isAuthenticated()")
+    @Operation(summary = "Update a survey (Owner or Admin)", security = @SecurityRequirement(name = "bearerAuth"))
     public ResponseEntity<Survey> updateSurvey(@PathVariable Long id, @Valid @RequestBody SurveyDTO dto) {
         return ResponseEntity.ok(surveyService.updateSurvey(id, dto));
     }

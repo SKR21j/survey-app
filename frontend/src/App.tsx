@@ -25,7 +25,7 @@ export default function App() {
               <Route
                 path="/dashboard"
                 element={
-                  <ProtectedRoute requireAdmin>
+                  <ProtectedRoute>
                     <DashboardPage />
                   </ProtectedRoute>
                 }
@@ -33,7 +33,7 @@ export default function App() {
               <Route
                 path="/surveys/create"
                 element={
-                  <ProtectedRoute requireAdmin>
+                  <ProtectedRoute>
                     <SurveyForm />
                   </ProtectedRoute>
                 }
@@ -41,7 +41,7 @@ export default function App() {
               <Route
                 path="/surveys/:id/edit"
                 element={
-                  <ProtectedRoute requireAdmin>
+                  <ProtectedRoute>
                     <SurveyForm />
                   </ProtectedRoute>
                 }

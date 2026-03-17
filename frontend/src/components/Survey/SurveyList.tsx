@@ -18,7 +18,7 @@ interface SurveyListProps {
 }
 
 export default function SurveyList({ activeOnly = false }: SurveyListProps) {
-  const { isAdmin } = useAuth();
+  const { user } = useAuth();
   const [surveys, setSurveys] = useState<Survey[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
@@ -78,7 +78,7 @@ export default function SurveyList({ activeOnly = false }: SurveyListProps) {
             <option value="desc">Newest first</option>
             <option value="asc">Oldest first</option>
           </select>
-          {isAdmin && (
+          {user && (
             <Link
               to="/surveys/create"
               className="ml-auto bg-indigo-600 text-white px-4 py-2 rounded-md text-sm hover:bg-indigo-700 transition-colors"

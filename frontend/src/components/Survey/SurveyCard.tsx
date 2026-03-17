@@ -16,9 +16,10 @@ interface SurveyCardProps {
 }
 
 export default function SurveyCard({ survey, onDeleted }: SurveyCardProps) {
-  const { isAdmin } = useAuth();
+  const { isAdmin, user } = useAuth();
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [deleteError, setDeleteError] = useState('');
+  const canEditSurvey = isAdmin || user?.id === survey.createdBy?.id;
 
   const handleDelete = async () => {
     try {
@@ -61,14 +62,16 @@ export default function SurveyCard({ survey, onDeleted }: SurveyCardProps) {
             Fill Survey
           </Link>
         )}
+        {canEditSurvey && (
+          <Link
+            to={`/surveys/${survey.id}/edit`}
+            className="flex-1 text-center border border-gray-300 text-gray-700 text-sm px-3 py-1.5 rounded-md hover:bg-gray-50 transition-colors"
+          >
+            Edit
+          </Link>
+        )}
         {isAdmin && (
           <>
-            <Link
-              to={`/surveys/${survey.id}/edit`}
-              className="flex-1 text-center border border-gray-300 text-gray-700 text-sm px-3 py-1.5 rounded-md hover:bg-gray-50 transition-colors"
-            >
-              Edit
-            </Link>
             {confirmDelete ? (
               <div className="flex items-center gap-1">
                 <button

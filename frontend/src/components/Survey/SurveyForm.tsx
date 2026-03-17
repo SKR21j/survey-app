@@ -5,6 +5,7 @@ import { SurveyFormData, SurveyStatus } from '../../types/Survey';
 import { QuestionType } from '../../types/Question';
 import { surveyService } from '../../services/surveyService';
 import Loading from '../Common/Loading';
+import { useAuth } from '../../hooks/useAuth';
 
 const QUESTION_TYPES: QuestionType[] = ['TEXT', 'MULTIPLE_CHOICE', 'RATING', 'CHECKBOX'];
 const STATUSES: SurveyStatus[] = ['DRAFT', 'ACTIVE', 'CLOSED'];
@@ -12,6 +13,7 @@ const STATUSES: SurveyStatus[] = ['DRAFT', 'ACTIVE', 'CLOSED'];
 export default function SurveyForm() {
   const { id } = useParams<{ id: string }>();
   const isEdit = Boolean(id);
+  const { user, isAdmin } = useAuth();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(isEdit);
   const [serverError, setServerError] = useState('');
@@ -42,6 +44,13 @@ export default function SurveyForm() {
       surveyService
         .getSurvey(Number(id))
         .then((survey) => {
+          const canEditSurvey = isAdmin || user?.id === survey.createdBy?.id;
+          if (!canEditSurvey) {
+            setServerError('You can only edit surveys that you created.');
+            navigate('/dashboard');
+            return;
+          }
+
           reset({
             title: survey.title,
             description: survey.description,
@@ -57,7 +66,7 @@ export default function SurveyForm() {
         .catch(() => navigate('/dashboard'))
         .finally(() => setLoading(false));
     }
-  }, [id, isEdit, navigate, reset]);
+  }, [id, isEdit, isAdmin, navigate, reset, user?.id]);
 
   const onSubmit = async (data: SurveyFormData) => {
     try {

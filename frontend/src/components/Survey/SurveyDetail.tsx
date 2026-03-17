@@ -7,7 +7,7 @@ import { useAuth } from '../../hooks/useAuth';
 
 export default function SurveyDetail() {
   const { id } = useParams<{ id: string }>();
-  const { isAdmin } = useAuth();
+  const { isAdmin, user } = useAuth();
   const navigate = useNavigate();
   const [survey, setSurvey] = useState<Survey | null>(null);
   const [loading, setLoading] = useState(true);
@@ -23,6 +23,8 @@ export default function SurveyDetail() {
 
   if (loading) return <Loading />;
   if (!survey) return null;
+
+  const canEditSurvey = isAdmin || user?.id === survey.createdBy?.id;
 
   return (
     <div className="max-w-2xl mx-auto space-y-6">
@@ -66,7 +68,7 @@ export default function SurveyDetail() {
             Fill this survey
           </Link>
         )}
-        {isAdmin && (
+        {canEditSurvey && (
           <Link
             to={`/surveys/${survey.id}/edit`}
             className="border border-gray-300 text-gray-700 px-5 py-2 rounded-md hover:bg-gray-50 transition-colors"

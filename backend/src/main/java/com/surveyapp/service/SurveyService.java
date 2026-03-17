@@ -1,6 +1,7 @@
 package com.surveyapp.service;
 
 import com.surveyapp.dto.SurveyDTO;
+import com.surveyapp.exception.ApiException;
 import com.surveyapp.exception.ResourceNotFoundException;
 import com.surveyapp.model.Question;
 import com.surveyapp.model.Survey;
@@ -11,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,9 +39,7 @@ public class SurveyService {
 
     @Transactional
     public Survey createSurvey(SurveyDTO dto) {
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        User currentUser = userRepository.findByUsername(username)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        User currentUser = getCurrentUser();
 
         Survey survey = new Survey();
         survey.setTitle(dto.getTitle());
@@ -63,13 +63,16 @@ public class SurveyService {
         }
 
         Survey saved = surveyRepository.save(survey);
-        log.info("Survey created: {} by {}", saved.getId(), username);
+        log.info("Survey created: {} by {}", saved.getId(), currentUser.getUsername());
         return saved;
     }
 
     @Transactional
     public Survey updateSurvey(Long id, SurveyDTO dto) {
         Survey survey = getSurveyById(id);
+        User currentUser = getCurrentUser();
+        validateCanEditSurvey(currentUser, survey);
+
         survey.setTitle(dto.getTitle());
         survey.setDescription(dto.getDescription());
         survey.setActive(dto.isActive());
@@ -109,6 +112,23 @@ public class SurveyService {
                     org.springframework.http.HttpStatus.BAD_REQUEST,
                     "Invalid question type: " + type
             );
+        }
+    }
+
+    private User getCurrentUser() {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+    }
+
+    private void validateCanEditSurvey(User user, Survey survey) {
+        boolean isAdmin = user.getRole() == User.Role.ADMIN;
+        boolean isOwner = survey.getCreatedBy() != null
+                && survey.getCreatedBy().getId() != null
+                && survey.getCreatedBy().getId().equals(user.getId());
+
+        if (!isAdmin && !isOwner) {
+            throw new ApiException(HttpStatus.FORBIDDEN, "You can only edit surveys that you created");
         }
     }
 }

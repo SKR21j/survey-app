@@ -2,7 +2,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 
 export default function Header() {
-  const { user, logout, isAdmin } = useAuth();
+  const { user, logout } = useAuth();
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -22,7 +22,7 @@ export default function Header() {
             <Link to="/" className="hover:text-indigo-200 transition-colors">
               Home
             </Link>
-            {isAdmin && (
+            {user && (
               <Link to="/dashboard" className="hover:text-indigo-200 transition-colors">
                 Dashboard
               </Link>

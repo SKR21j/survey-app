@@ -8,9 +8,9 @@ const links = [
 
 export default function Sidebar() {
   return (
-    <aside className="w-56 bg-white border-r border-gray-200 min-h-screen">
+    <aside className="w-56 bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800 min-h-screen transition-colors">
       <nav className="p-4 space-y-1">
-        <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">
+        <p className="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-3">
           Admin Menu
         </p>
         {links.map(({ to, label }) => (
@@ -20,8 +20,8 @@ export default function Sidebar() {
             className={({ isActive }) =>
               `flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
                 isActive
-                  ? 'bg-indigo-50 text-indigo-700'
-                  : 'text-gray-700 hover:bg-gray-100'
+                  ? 'bg-indigo-50 dark:bg-gray-800 text-indigo-700 dark:text-indigo-300'
+                  : 'text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800'
               }`
             }
           >

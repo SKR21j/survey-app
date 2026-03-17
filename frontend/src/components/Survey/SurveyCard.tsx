@@ -5,9 +5,9 @@ import { useAuth } from '../../hooks/useAuth';
 import { surveyService } from '../../services/surveyService';
 
 const STATUS_COLORS: Record<string, string> = {
-  DRAFT: 'bg-gray-100 text-gray-700',
-  ACTIVE: 'bg-green-100 text-green-700',
-  CLOSED: 'bg-red-100 text-red-700',
+  DRAFT: 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300',
+  ACTIVE: 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300',
+  CLOSED: 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300',
 };
 
 interface SurveyCardProps {
@@ -32,17 +32,17 @@ export default function SurveyCard({ survey, onDeleted }: SurveyCardProps) {
   };
 
   return (
-    <div className="bg-white rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-shadow p-5 flex flex-col gap-3">
+    <div className="bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-800 shadow-sm hover:shadow-md transition-shadow p-5 flex flex-col gap-3">
       <div className="flex items-start justify-between gap-2">
-        <h3 className="text-base font-semibold text-gray-900 line-clamp-2">{survey.title}</h3>
+        <h3 className="text-base font-semibold text-gray-900 dark:text-gray-100 line-clamp-2">{survey.title}</h3>
         <span className={`text-xs font-medium px-2 py-0.5 rounded-full whitespace-nowrap ${STATUS_COLORS[survey.status]}`}>
           {survey.status}
         </span>
       </div>
 
-      <p className="text-sm text-gray-500 line-clamp-2">{survey.description}</p>
+      <p className="text-sm text-gray-500 dark:text-gray-400 line-clamp-2">{survey.description}</p>
 
-      <div className="flex items-center gap-4 text-xs text-gray-400">
+      <div className="flex items-center gap-4 text-xs text-gray-400 dark:text-gray-500">
         <span>📝 {survey.questions?.length ?? 0} questions</span>
         {survey.responseCount !== undefined && (
           <span>📊 {survey.responseCount} responses</span>
@@ -53,7 +53,7 @@ export default function SurveyCard({ survey, onDeleted }: SurveyCardProps) {
         <span>🗓 {survey.createdAt ? new Date(survey.createdAt).toLocaleDateString() : '-'}</span>
       </div>
 
-      <div className="flex items-center gap-2 mt-auto pt-2 border-t border-gray-100">
+      <div className="flex items-center gap-2 mt-auto pt-2 border-t border-gray-100 dark:border-gray-800">
         {survey.status === 'ACTIVE' && (
           <Link
             to={`/surveys/${survey.id}`}
@@ -65,7 +65,7 @@ export default function SurveyCard({ survey, onDeleted }: SurveyCardProps) {
         {canEditSurvey && (
           <Link
             to={`/surveys/${survey.id}/edit`}
-            className="flex-1 text-center border border-gray-300 text-gray-700 text-sm px-3 py-1.5 rounded-md hover:bg-gray-50 transition-colors"
+            className="flex-1 text-center border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-200 text-sm px-3 py-1.5 rounded-md hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
           >
             Edit
           </Link>
@@ -82,7 +82,7 @@ export default function SurveyCard({ survey, onDeleted }: SurveyCardProps) {
                 </button>
                 <button
                   onClick={() => setConfirmDelete(false)}
-                  className="text-xs text-gray-600 hover:text-gray-800 px-2 py-1 rounded hover:bg-gray-100"
+                  className="text-xs text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-gray-100 px-2 py-1 rounded hover:bg-gray-100 dark:hover:bg-gray-800"
                 >
                   Cancel
                 </button>
@@ -90,7 +90,7 @@ export default function SurveyCard({ survey, onDeleted }: SurveyCardProps) {
             ) : (
               <button
                 onClick={() => setConfirmDelete(true)}
-                className="text-sm text-red-600 hover:text-red-700 px-3 py-1.5 rounded-md hover:bg-red-50 transition-colors"
+                className="text-sm text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 px-3 py-1.5 rounded-md hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
               >
                 Delete
               </button>

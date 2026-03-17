@@ -13,6 +13,7 @@ import com.surveyapp.repository.SurveyRepository;
 import com.surveyapp.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.Hibernate;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -71,13 +72,22 @@ public class ResponseService {
         return saved;
     }
 
+    @Transactional(readOnly = true)
     public Page<Response> getSurveyResponses(Long surveyId, Pageable pageable) {
         if (!surveyRepository.existsById(surveyId)) {
             throw new ResourceNotFoundException("Survey", surveyId);
         }
-        return responseRepository.findBySurveyId(surveyId, pageable);
+        Page<Response> page = responseRepository.findBySurveyId(surveyId, pageable);
+        page.getContent().forEach(r -> {
+            Hibernate.initialize(r.getAnswers());
+            if (r.getUser() != null) {
+                Hibernate.initialize(r.getUser());
+            }
+        });
+        return page;
     }
 
+    @Transactional(readOnly = true)
     public List<ResponseStatsDTO> getResponseStats(Long surveyId) {
         Survey survey = surveyRepository.findById(surveyId)
                 .orElseThrow(() -> new ResourceNotFoundException("Survey", surveyId));

@@ -15,6 +15,6 @@ public interface ResponseRepository extends JpaRepository<Response, Long> {
     Page<Response> findBySurveyId(Long surveyId, Pageable pageable);
     long countBySurveyId(Long surveyId);
 
-    @Query("SELECT DISTINCT r FROM Response r LEFT JOIN FETCH r.answers a WHERE r.survey.id = :surveyId")
+    @Query("SELECT DISTINCT r FROM Response r LEFT JOIN FETCH r.answers a LEFT JOIN FETCH a.question WHERE r.survey.id = :surveyId")
     List<Response> findBySurveyIdWithAnswers(@Param("surveyId") Long surveyId);
 }

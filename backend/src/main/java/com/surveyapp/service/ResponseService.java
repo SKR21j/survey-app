@@ -1,6 +1,7 @@
 package com.surveyapp.service;
 
 import com.surveyapp.dto.ResponseDTO;
+import com.surveyapp.dto.ResponseStatsDTO;
 import com.surveyapp.exception.ResourceNotFoundException;
 import com.surveyapp.model.Answer;
 import com.surveyapp.model.Question;
@@ -18,8 +19,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -75,5 +76,34 @@ public class ResponseService {
             throw new ResourceNotFoundException("Survey", surveyId);
         }
         return responseRepository.findBySurveyId(surveyId, pageable);
+    }
+
+    public List<ResponseStatsDTO> getResponseStats(Long surveyId) {
+        Survey survey = surveyRepository.findById(surveyId)
+                .orElseThrow(() -> new ResourceNotFoundException("Survey", surveyId));
+
+        List<Response> responses = responseRepository.findBySurveyId(surveyId, Pageable.unpaged()).getContent();
+
+        return survey.getQuestions().stream()
+                .map(question -> {
+                    ResponseStatsDTO stat = new ResponseStatsDTO();
+                    stat.setQuestionId(question.getId());
+                    stat.setQuestionText(question.getText());
+                    stat.setQuestionType(question.getType().toString());
+                    stat.setTotalResponses(responses.size());
+
+                    Map<String, Long> answerCounts = responses.stream()
+                            .flatMap(r -> r.getAnswers().stream())
+                            .filter(a -> a.getQuestion().getId().equals(question.getId()))
+                            .collect(Collectors.groupingBy(Answer::getValue, Collectors.counting()));
+
+                    List<ResponseStatsDTO.AnswerCountDTO> answerList = answerCounts.entrySet().stream()
+                            .map(e -> new ResponseStatsDTO.AnswerCountDTO(e.getKey(), e.getValue()))
+                            .collect(Collectors.toList());
+
+                    stat.setAnswers(answerList);
+                    return stat;
+                })
+                .collect(Collectors.toList());
     }
 }

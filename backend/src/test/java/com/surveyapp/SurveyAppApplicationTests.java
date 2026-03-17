@@ -12,7 +12,6 @@ import org.springframework.test.context.TestPropertySource;
         "spring.datasource.driver-class-name=org.h2.Driver",
         "spring.datasource.username=sa",
         "spring.datasource.password=",
-        "spring.jpa.database-platform=org.hibernate.dialect.H2Dialect",
         "spring.jpa.hibernate.ddl-auto=create-drop",
         "app.jwt.secret=dGVzdFNlY3JldEtleUZvclRlc3RpbmdQdXJwb3Nlc09ubHlOb3RGb3JQcm9k",
         "app.jwt.expiration=3600000"

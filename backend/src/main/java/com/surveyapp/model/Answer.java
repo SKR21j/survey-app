@@ -24,6 +24,6 @@ public class Answer {
     @JoinColumn(name = "question_id", nullable = false)
     private Question question;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(name = "answer_text", columnDefinition = "TEXT")
     private String value;
 }

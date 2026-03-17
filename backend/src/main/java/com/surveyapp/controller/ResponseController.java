@@ -24,10 +24,10 @@ public class ResponseController {
     private final ResponseService responseService;
 
     @PostMapping("/responses")
-    @Operation(summary = "Submit a survey response", security = @SecurityRequirement(name = "bearerAuth"))
-    public ResponseEntity<Response> submitResponse(@Valid @RequestBody ResponseDTO dto) {
-        Response response = responseService.submitResponse(dto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    @Operation(summary = "Submit a survey response")
+    public ResponseEntity<Void> submitResponse(@Valid @RequestBody ResponseDTO dto) {
+        responseService.submitResponse(dto);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @GetMapping("/surveys/{id}/responses")

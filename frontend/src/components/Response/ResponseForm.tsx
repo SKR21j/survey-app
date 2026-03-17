@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { Survey } from '../../types/Survey';
 import { Answer } from '../../types/Response';
@@ -7,6 +8,10 @@ import QuestionRenderer from './QuestionRenderer';
 
 interface ResponseFormProps {
   survey: Survey;
+}
+
+function serializeAnswerValue(value: string | string[]): string {
+  return Array.isArray(value) ? value.join(', ') : value;
 }
 
 export default function ResponseForm({ survey }: ResponseFormProps) {
@@ -40,14 +45,19 @@ export default function ResponseForm({ survey }: ResponseFormProps) {
 
     const submission: Answer[] = survey.questions
       .map((q) => ({ questionId: q.id, value: answers[q.id] ?? '' }))
-      .filter((a) => a.value !== '' && !(Array.isArray(a.value) && a.value.length === 0));
+      .filter((a) => a.value !== '' && !(Array.isArray(a.value) && a.value.length === 0))
+      .map((a) => ({ ...a, value: serializeAnswerValue(a.value) }));
 
     setSubmitting(true);
     try {
       await responseService.submitResponse({ surveyId: survey.id, answers: submission });
       setSubmitted(true);
-    } catch {
-      setError('Failed to submit response. Please try again.');
+    } catch (err) {
+      if (axios.isAxiosError(err) && err.response?.data?.message) {
+        setError(String(err.response.data.message));
+      } else {
+        setError('Failed to submit response. Please try again.');
+      }
     } finally {
       setSubmitting(false);
     }

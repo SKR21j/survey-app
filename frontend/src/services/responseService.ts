@@ -2,9 +2,8 @@ import api from './api';
 import { Answer, ResponseStats, ResponseSubmission, SurveyResponse } from '../types/Response';
 
 export const responseService = {
-  async submitResponse(data: ResponseSubmission): Promise<SurveyResponse> {
-    const response = await api.post<SurveyResponse>('/responses', data);
-    return response.data;
+  async submitResponse(data: ResponseSubmission): Promise<void> {
+    await api.post('/responses', data);
   },
 
   async getResponses(surveyId: number): Promise<SurveyResponse[]> {

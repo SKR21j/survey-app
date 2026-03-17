@@ -4,7 +4,7 @@ Spring Boot backend for the Survey Application.
 
 ## Tech Stack
 
-- **Java 17**
+- **Java 21**
 - **Spring Boot 3.1.x**
 - **Spring Security 6.x** with JWT authentication
 - **Spring Data JPA** with PostgreSQL
@@ -13,7 +13,7 @@ Spring Boot backend for the Survey Application.
 
 ## Prerequisites
 
-- JDK 17+
+- JDK 21+
 - Maven 3.8+
 - PostgreSQL 14+
 

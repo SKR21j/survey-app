@@ -6,6 +6,7 @@ import com.surveyapp.exception.ResourceNotFoundException;
 import com.surveyapp.model.Question;
 import com.surveyapp.model.Survey;
 import com.surveyapp.model.User;
+import com.surveyapp.repository.ResponseRepository;
 import com.surveyapp.repository.SurveyRepository;
 import com.surveyapp.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +30,7 @@ public class SurveyService {
 
     private final SurveyRepository surveyRepository;
     private final UserRepository userRepository;
+    private final ResponseRepository responseRepository;
 
     @Transactional(readOnly = true)
     public Page<Survey> getVisibleSurveys(Pageable pageable) {
@@ -170,8 +172,10 @@ public class SurveyService {
                 s.getCreatedBy().getUsername();
             }
             if (s.getQuestions() != null) {
-                s.getQuestions().forEach(q -> q.getOptions().size());
+                s.getQuestions().size();
             }
+            // Populate response count
+            s.setResponseCount(responseRepository.countBySurveyId(s.getId()));
         });
     }
 }

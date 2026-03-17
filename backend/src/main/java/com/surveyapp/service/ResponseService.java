@@ -82,7 +82,7 @@ public class ResponseService {
         Survey survey = surveyRepository.findById(surveyId)
                 .orElseThrow(() -> new ResourceNotFoundException("Survey", surveyId));
 
-        List<Response> responses = responseRepository.findBySurveyId(surveyId, Pageable.unpaged()).getContent();
+        List<Response> responses = responseRepository.findBySurveyIdWithAnswers(surveyId);
 
         return survey.getQuestions().stream()
                 .map(question -> {

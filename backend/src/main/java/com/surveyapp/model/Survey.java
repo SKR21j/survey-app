@@ -44,6 +44,12 @@ public class Survey {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
+    @Transient
+    private Long responseCount;
+
+    @Transient
+    private Double averageRating;
+
     @PrePersist
     public void prePersist() {
         this.createdAt = LocalDateTime.now();

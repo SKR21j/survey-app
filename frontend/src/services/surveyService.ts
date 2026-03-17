@@ -29,6 +29,8 @@ interface BackendSurvey {
     email?: string;
     role?: 'ADMIN' | 'USER';
   };
+  responseCount?: number;
+  averageRating?: number;
 }
 
 function mapBackendSurvey(s: BackendSurvey): Survey {
@@ -59,6 +61,8 @@ function mapBackendSurvey(s: BackendSurvey): Survey {
     createdAt: s.createdAt,
     updatedAt: s.updatedAt,
     createdBy,
+    responseCount: s.responseCount,
+    averageRating: s.averageRating,
   };
 }
 

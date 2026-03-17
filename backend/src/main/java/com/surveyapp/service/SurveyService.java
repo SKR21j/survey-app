@@ -173,6 +173,11 @@ public class SurveyService {
             }
             if (s.getQuestions() != null) {
                 s.getQuestions().size();
+                s.getQuestions().forEach(q -> {
+                    if (q.getOptions() != null) {
+                        q.getOptions().size();
+                    }
+                });
             }
             // Populate response count
             s.setResponseCount(responseRepository.countBySurveyId(s.getId()));

@@ -46,6 +46,6 @@ public class Question {
     private List<String> options = new ArrayList<>();
 
     public enum QuestionType {
-        TEXT, MULTIPLE_CHOICE, SINGLE_CHOICE, RATING, YES_NO
+        TEXT, MULTIPLE_CHOICE, SINGLE_CHOICE, RATING, YES_NO, CHECKBOX, SLIDER
     }
 }

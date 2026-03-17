@@ -7,7 +7,7 @@ import { surveyService } from '../../services/surveyService';
 import Loading from '../Common/Loading';
 import { useAuth } from '../../hooks/useAuth';
 
-const QUESTION_TYPES: QuestionType[] = ['TEXT', 'MULTIPLE_CHOICE', 'RATING', 'CHECKBOX'];
+const QUESTION_TYPES: QuestionType[] = ['TEXT', 'MULTIPLE_CHOICE', 'RATING', 'CHECKBOX', 'SLIDER'];
 const STATUSES: SurveyStatus[] = ['DRAFT', 'ACTIVE', 'CLOSED'];
 
 export default function SurveyForm() {
@@ -193,7 +193,7 @@ function QuestionEditor({ index, register, control, watch, onRemove }: QuestionE
   const qType = watch(`questions.${index}.type`);
   const hasOptions = qType === 'MULTIPLE_CHOICE' || qType === 'CHECKBOX';
 
-  const { fields: optionFields, append: appendOption, remove: removeOption } = useFA({
+  const { fields: optionFields, append: appendOption, remove: removeOption, replace: replaceOptions } = useFA({
     control,
     name: `questions.${index}.options`,
   });
@@ -219,6 +219,12 @@ function QuestionEditor({ index, register, control, watch, onRemove }: QuestionE
       <div className="flex items-center gap-4">
         <select
           {...register(`questions.${index}.type`)}
+          onChange={(e) => {
+            register(`questions.${index}.type`).onChange(e);
+            if (e.target.value === 'SLIDER') {
+              replaceOptions([{ text: '0' }, { text: '10' }, { text: '1' }]);
+            }
+          }}
           className="border border-gray-300 rounded-md px-2 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
         >
           {QUESTION_TYPES.map((t) => (
@@ -257,6 +263,24 @@ function QuestionEditor({ index, register, control, watch, onRemove }: QuestionE
           >
             + Add option
           </button>
+        </div>
+      )}
+
+      {qType === 'SLIDER' && (
+        <div className="space-y-2 pl-4 border-l-2 border-indigo-100">
+          <p className="text-xs text-gray-500 font-medium">Slider Range</p>
+          <div className="flex gap-4">
+            {(['Min', 'Max', 'Step'] as const).map((label, i) => (
+              <div key={label} className="flex flex-col gap-1">
+                <label className="text-xs text-gray-500">{label}</label>
+                <input
+                  type="number"
+                  {...register(`questions.${index}.options.${i}.text`, { required: true })}
+                  className="border border-gray-300 rounded-md px-2 py-1 text-sm w-20 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                />
+              </div>
+            ))}
+          </div>
         </div>
       )}
     </div>

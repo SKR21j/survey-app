@@ -97,7 +97,7 @@ export default function ResponseForm({ survey }: ResponseFormProps) {
           <div key={q.id} className="bg-white rounded-lg border border-gray-200 p-5">
             <QuestionRenderer
               question={q}
-              value={answers[q.id] ?? (q.type === 'CHECKBOX' ? [] : '')}
+              value={answers[q.id] ?? (q.type === 'CHECKBOX' ? [] : q.type === 'SLIDER' ? (q.options[0]?.text ?? '0') : '')}
               onChange={(v) => handleAnswer(q.id, v)}
             />
           </div>

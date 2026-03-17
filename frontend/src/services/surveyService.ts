@@ -49,7 +49,7 @@ function mapBackendSurvey(s: BackendSurvey): Survey {
     questions: (s.questions ?? []).map((q, index) => ({
       id: q.id ?? index,
       text: q.text,
-      type: q.type as 'TEXT' | 'MULTIPLE_CHOICE' | 'RATING' | 'CHECKBOX',
+      type: q.type as 'TEXT' | 'MULTIPLE_CHOICE' | 'RATING' | 'CHECKBOX' | 'SLIDER',
       required: q.required,
       order: q.displayOrder ?? index + 1,
       options: (q.options ?? []).map((optionText, optionIndex) => ({

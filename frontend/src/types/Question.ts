@@ -1,4 +1,4 @@
-export type QuestionType = 'TEXT' | 'MULTIPLE_CHOICE' | 'RATING' | 'CHECKBOX';
+export type QuestionType = 'TEXT' | 'MULTIPLE_CHOICE' | 'RATING' | 'CHECKBOX' | 'SLIDER';
 
 export interface QuestionOption {
   id: number;

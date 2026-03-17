@@ -30,30 +30,43 @@ public class SurveyService {
     private final SurveyRepository surveyRepository;
     private final UserRepository userRepository;
 
+    @Transactional(readOnly = true)
     public Page<Survey> getVisibleSurveys(Pageable pageable) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
+        Page<Survey> surveys;
         if (authentication == null || authentication instanceof AnonymousAuthenticationToken) {
-            return surveyRepository.findByActiveTrue(pageable);
+            surveys = surveyRepository.findByActiveTrue(pageable);
+            initializeSurveyRelations(surveys.getContent());
+            return surveys;
         }
 
         User currentUser = userRepository.findByUsername(authentication.getName())
                 .orElse(null);
 
         if (currentUser == null) {
-            return surveyRepository.findByActiveTrue(pageable);
+            surveys = surveyRepository.findByActiveTrue(pageable);
+            initializeSurveyRelations(surveys.getContent());
+            return surveys;
         }
 
         if (currentUser.getRole() == User.Role.ADMIN) {
-            return surveyRepository.findAll(pageable);
+            surveys = surveyRepository.findAll(pageable);
+            initializeSurveyRelations(surveys.getContent());
+            return surveys;
         }
 
-        return surveyRepository.findByActiveTrueOrCreatedById(currentUser.getId(), pageable);
+        surveys = surveyRepository.findByActiveTrueOrCreatedById(currentUser.getId(), pageable);
+        initializeSurveyRelations(surveys.getContent());
+        return surveys;
     }
 
+    @Transactional(readOnly = true)
     public Survey getSurveyById(Long id) {
-        return surveyRepository.findById(id)
+        Survey survey = surveyRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Survey", id));
+        initializeSurveyRelations(List.of(survey));
+        return survey;
     }
 
     @Transactional
@@ -149,5 +162,16 @@ public class SurveyService {
         if (!isAdmin && !isOwner) {
             throw new ApiException(HttpStatus.FORBIDDEN, "You can only edit surveys that you created");
         }
+    }
+
+    private void initializeSurveyRelations(List<Survey> surveys) {
+        surveys.forEach(s -> {
+            if (s.getCreatedBy() != null) {
+                s.getCreatedBy().getUsername();
+            }
+            if (s.getQuestions() != null) {
+                s.getQuestions().forEach(q -> q.getOptions().size());
+            }
+        });
     }
 }

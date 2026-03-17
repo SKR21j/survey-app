@@ -1,5 +1,6 @@
 package com.surveyapp.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
@@ -30,6 +31,7 @@ public class Question {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "survey_id", nullable = false)
+    @JsonIgnore
     private Survey survey;
 
     @Column(name = "display_order")

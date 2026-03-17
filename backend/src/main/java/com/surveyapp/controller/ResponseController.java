@@ -25,9 +25,9 @@ public class ResponseController {
 
     @PostMapping("/responses")
     @Operation(summary = "Submit a survey response")
-    public ResponseEntity<Void> submitResponse(@Valid @RequestBody ResponseDTO dto) {
-        responseService.submitResponse(dto);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+    public ResponseEntity<Response> submitResponse(@Valid @RequestBody ResponseDTO dto) {
+        Response response = responseService.submitResponse(dto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @GetMapping("/surveys/{id}/responses")

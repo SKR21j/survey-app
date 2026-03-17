@@ -22,7 +22,7 @@ export default function Login() {
       await login(data);
       navigate('/');
     } catch {
-      setError('Invalid email or password');
+      setError('Invalid username or password');
     }
   };
 
@@ -34,14 +34,14 @@ export default function Login() {
       error={error}
     >
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+        <label className="block text-sm font-medium text-gray-700 mb-1">Username</label>
         <input
-          type="email"
-          {...register('email', { required: 'Email is required' })}
+          type="text"
+          {...register('username', { required: 'Username is required' })}
           className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-          placeholder="you@example.com"
+          placeholder="your_username"
         />
-        {errors.email && <p className="mt-1 text-xs text-red-600">{errors.email.message}</p>}
+        {errors.username && <p className="mt-1 text-xs text-red-600">{errors.username.message}</p>}
       </div>
 
       <div>

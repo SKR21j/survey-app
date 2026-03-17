@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { useAuth } from '../../hooks/useAuth';
-import { RegisterRequest, UserRole } from '../../types/User';
+import { RegisterRequest } from '../../types/User';
 import AuthForm from './AuthForm';
 
 export default function Register() {
@@ -14,7 +14,7 @@ export default function Register() {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-  } = useForm<RegisterRequest>({ defaultValues: { role: 'USER' } });
+  } = useForm<RegisterRequest>();
 
   const onSubmit = async (data: RegisterRequest) => {
     try {
@@ -34,14 +34,14 @@ export default function Register() {
       error={error}
     >
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Name</label>
+        <label className="block text-sm font-medium text-gray-700 mb-1">Username</label>
         <input
           type="text"
-          {...register('name', { required: 'Name is required' })}
+          {...register('username', { required: 'Username is required' })}
           className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-          placeholder="John Doe"
+          placeholder="your_username"
         />
-        {errors.name && <p className="mt-1 text-xs text-red-600">{errors.name.message}</p>}
+        {errors.username && <p className="mt-1 text-xs text-red-600">{errors.username.message}</p>}
       </div>
 
       <div>
@@ -67,20 +67,6 @@ export default function Register() {
           placeholder="••••••••"
         />
         {errors.password && <p className="mt-1 text-xs text-red-600">{errors.password.message}</p>}
-      </div>
-
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Role</label>
-        <select
-          {...register('role')}
-          className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-        >
-          {(['USER', 'ADMIN'] as UserRole[]).map((r) => (
-            <option key={r} value={r}>
-              {r}
-            </option>
-          ))}
-        </select>
       </div>
 
       <button

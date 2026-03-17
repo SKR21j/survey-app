@@ -5,7 +5,7 @@ export interface User {
   name: string;
   email: string;
   role: UserRole;
-  createdAt: string;
+  createdAt?: string;
 }
 
 export interface AuthResponse {
@@ -14,13 +14,12 @@ export interface AuthResponse {
 }
 
 export interface LoginRequest {
-  email: string;
+  username: string;
   password: string;
 }
 
 export interface RegisterRequest {
-  name: string;
+  username: string;
   email: string;
   password: string;
-  role: UserRole;
 }

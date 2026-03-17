@@ -42,14 +42,14 @@ export default function SurveyCard({ survey, onDeleted }: SurveyCardProps) {
       <p className="text-sm text-gray-500 line-clamp-2">{survey.description}</p>
 
       <div className="flex items-center gap-4 text-xs text-gray-400">
-        <span>📝 {survey.questions.length} questions</span>
+        <span>📝 {survey.questions?.length ?? 0} questions</span>
         {survey.responseCount !== undefined && (
           <span>📊 {survey.responseCount} responses</span>
         )}
         {survey.averageRating !== undefined && (
           <span>⭐ {survey.averageRating.toFixed(1)}</span>
         )}
-        <span>🗓 {new Date(survey.createdAt).toLocaleDateString()}</span>
+        <span>🗓 {survey.createdAt ? new Date(survey.createdAt).toLocaleDateString() : '-'}</span>
       </div>
 
       <div className="flex items-center gap-2 mt-auto pt-2 border-t border-gray-100">

@@ -1,5 +1,6 @@
 package com.surveyapp.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -22,6 +23,7 @@ public class Response {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "survey_id", nullable = false)
+    @JsonIgnore
     private Survey survey;
 
     @ManyToOne(fetch = FetchType.LAZY)

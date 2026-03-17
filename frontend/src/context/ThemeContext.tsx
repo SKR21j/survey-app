@@ -14,7 +14,12 @@ const ThemeContext = createContext<ThemeContextValue | undefined>(undefined);
 
 function applyTheme(theme: Theme): void {
   const root = document.documentElement;
-  root.classList.toggle('dark', theme === 'dark');
+  const body = document.body;
+  const isDark = theme === 'dark';
+
+  root.classList.toggle('dark', isDark);
+  body.classList.toggle('dark', isDark);
+  root.style.colorScheme = theme;
 }
 
 function getInitialTheme(): Theme {

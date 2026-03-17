@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useForm, useFieldArray } from 'react-hook-form';
 import { SurveyFormData, SurveyStatus } from '../../types/Survey';
@@ -198,6 +198,22 @@ function QuestionEditor({ index, register, control, watch, onRemove }: QuestionE
     name: `questions.${index}.options`,
   });
 
+  // Track previous type to only act on actual changes
+  const prevTypeRef = useRef(qType);
+  useEffect(() => {
+    const prev = prevTypeRef.current;
+    prevTypeRef.current = qType;
+    if (prev === qType) return;
+
+    if (qType === 'SLIDER') {
+      // Auto-populate min / max / step when switching TO slider
+      replaceOptions([{ text: '0' }, { text: '100' }, { text: '1' }]);
+    } else if (prev === 'SLIDER') {
+      // Clear slider metadata when switching AWAY from slider
+      replaceOptions([]);
+    }
+  }, [qType]); // eslint-disable-line react-hooks/exhaustive-deps
+
   return (
     <div className="bg-white rounded-lg border border-gray-200 p-4 space-y-3">
       <div className="flex items-center gap-2">
@@ -219,12 +235,6 @@ function QuestionEditor({ index, register, control, watch, onRemove }: QuestionE
       <div className="flex items-center gap-4">
         <select
           {...register(`questions.${index}.type`)}
-          onChange={(e) => {
-            register(`questions.${index}.type`).onChange(e);
-            if (e.target.value === 'SLIDER') {
-              replaceOptions([{ text: '0' }, { text: '10' }, { text: '1' }]);
-            }
-          }}
           className="border border-gray-300 rounded-md px-2 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
         >
           {QUESTION_TYPES.map((t) => (
@@ -266,7 +276,7 @@ function QuestionEditor({ index, register, control, watch, onRemove }: QuestionE
         </div>
       )}
 
-      {qType === 'SLIDER' && (
+      {qType === 'SLIDER' && optionFields.length === 3 && (
         <div className="space-y-2 pl-4 border-l-2 border-indigo-100">
           <p className="text-xs text-gray-500 font-medium">Slider Range</p>
           <div className="flex gap-4">
@@ -275,7 +285,7 @@ function QuestionEditor({ index, register, control, watch, onRemove }: QuestionE
                 <label className="text-xs text-gray-500">{label}</label>
                 <input
                   type="number"
-                  {...register(`questions.${index}.options.${i}.text`, { required: true })}
+                  {...register(`questions.${index}.options.${i}.text`)}
                   className="border border-gray-300 rounded-md px-2 py-1 text-sm w-20 focus:outline-none focus:ring-1 focus:ring-indigo-500"
                 />
               </div>

@@ -77,8 +77,10 @@ export default function SurveyForm() {
         await surveyService.createSurvey(data);
       }
       navigate('/dashboard');
-    } catch {
-      setServerError('Failed to save survey. Please try again.');
+    } catch (err: unknown) {
+      const axiosErr = err as { response?: { data?: { message?: string } } };
+      const msg = axiosErr?.response?.data?.message;
+      setServerError(msg ?? 'Failed to save survey. Please try again.');
     }
   };
 

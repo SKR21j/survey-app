@@ -1,14 +1,45 @@
 import api from './api';
 import { Answer, ResponseStats, ResponseSubmission, SurveyResponse } from '../types/Response';
 
+interface PageResponse<T> {
+  content?: T[];
+}
+
+interface BackendAnswer {
+  value: string;
+}
+
+interface BackendResponse {
+  id: number;
+  submittedAt: string;
+  answers?: BackendAnswer[];
+  user?: {
+    id?: number;
+  };
+}
+
+function mapBackendResponse(surveyId: number, item: BackendResponse): SurveyResponse {
+  return {
+    id: item.id,
+    surveyId,
+    userId: item.user?.id ?? 0,
+    submittedAt: item.submittedAt,
+    answers: (item.answers ?? []).map((a, index) => ({
+      questionId: index,
+      value: a.value,
+    })),
+  };
+}
+
 export const responseService = {
   async submitResponse(data: ResponseSubmission): Promise<void> {
     await api.post('/responses', data);
   },
 
   async getResponses(surveyId: number): Promise<SurveyResponse[]> {
-    const response = await api.get<SurveyResponse[]>(`/responses/survey/${surveyId}`);
-    return response.data;
+    const response = await api.get<PageResponse<BackendResponse>>(`/surveys/${surveyId}/responses`);
+    const content = response.data?.content ?? [];
+    return content.map((item) => mapBackendResponse(surveyId, item));
   },
 
   async getResponseById(id: number): Promise<SurveyResponse> {

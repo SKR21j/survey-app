@@ -34,8 +34,8 @@ public class ResponseController {
     }
 
     @GetMapping("/surveys/{id}/responses")
-    @PreAuthorize("hasRole('ADMIN')")
-    @Operation(summary = "Get all responses for a survey (Admin only)", security = @SecurityRequirement(name = "bearerAuth"))
+    @PreAuthorize("isAuthenticated()")
+    @Operation(summary = "Get all responses for a survey", security = @SecurityRequirement(name = "bearerAuth"))
     public ResponseEntity<Page<Response>> getSurveyResponses(@PathVariable Long id, Pageable pageable) {
         return ResponseEntity.ok(responseService.getSurveyResponses(id, pageable));
     }

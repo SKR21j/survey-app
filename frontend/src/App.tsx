@@ -1,7 +1,6 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { AuthProvider, ProtectedRoute } from './context/AuthContext';
 import Header from './components/Common/Header';
-import Footer from './components/Common/Footer';
 import HomePage from './pages/HomePage';
 import DashboardPage from './pages/DashboardPage';
 import SurveyPage from './pages/SurveyPage';
@@ -51,7 +50,6 @@ export default function App() {
                 <Route path="*" element={<NotFoundPage />} />
               </Routes>
             </main>
-            <Footer />
           </div>
         </AuthProvider>
       </ThemeProvider>

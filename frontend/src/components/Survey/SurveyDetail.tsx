@@ -4,10 +4,12 @@ import { Survey } from '../../types/Survey';
 import { surveyService } from '../../services/surveyService';
 import Loading from '../Common/Loading';
 import { useAuth } from '../../hooks/useAuth';
+import { useLanguage } from '../../hooks/useLanguage';
 
 export default function SurveyDetail() {
   const { id } = useParams<{ id: string }>();
   const { isAdmin, user } = useAuth();
+  const { t } = useLanguage();
   const navigate = useNavigate();
   const [survey, setSurvey] = useState<Survey | null>(null);
   const [loading, setLoading] = useState(true);
@@ -47,7 +49,7 @@ export default function SurveyDetail() {
       </div>
 
       <div className="bg-white rounded-lg border border-gray-200 p-5 space-y-3">
-        <h2 className="font-semibold text-gray-800">Questions ({survey.questions.length})</h2>
+        <h2 className="font-semibold text-gray-800">{t('questions')} ({survey.questions.length})</h2>
         <ol className="list-decimal list-inside space-y-2">
           {survey.questions.map((q) => (
             <li key={q.id} className="text-sm text-gray-700">
@@ -65,7 +67,7 @@ export default function SurveyDetail() {
             to={`/surveys/${survey.id}`}
             className="bg-indigo-600 text-white px-5 py-2 rounded-md hover:bg-indigo-700 transition-colors"
           >
-            Fill this survey
+            {t('fillThisSurvey')}
           </Link>
         )}
         {canEditSurvey && (
@@ -73,14 +75,14 @@ export default function SurveyDetail() {
             to={`/surveys/${survey.id}/edit`}
             className="border border-gray-300 text-gray-700 px-5 py-2 rounded-md hover:bg-gray-50 transition-colors"
           >
-            Edit
+            {t('edit')}
           </Link>
         )}
         <button
           onClick={() => navigate(-1)}
           className="text-gray-500 px-5 py-2 rounded-md hover:bg-gray-100 transition-colors"
         >
-          Back
+          {t('back')}
         </button>
       </div>
     </div>

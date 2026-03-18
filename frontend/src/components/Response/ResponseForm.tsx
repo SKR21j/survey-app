@@ -5,6 +5,7 @@ import { Survey } from '../../types/Survey';
 import { Answer } from '../../types/Response';
 import { responseService } from '../../services/responseService';
 import { ratingService } from '../../services/ratingService';
+import { useLanguage } from '../../hooks/useLanguage';
 import QuestionRenderer from './QuestionRenderer';
 import RatingComponent from '../Rating/RatingComponent';
 
@@ -18,6 +19,7 @@ function serializeAnswerValue(value: string | string[]): string {
 
 export default function ResponseForm({ survey }: ResponseFormProps) {
   const navigate = useNavigate();
+  const { t } = useLanguage();
   const [answers, setAnswers] = useState<Record<number, string | string[]>>({});
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
@@ -37,7 +39,7 @@ export default function ResponseForm({ survey }: ResponseFormProps) {
       if (q.required) {
         const val = answers[q.id];
         if (!val || (Array.isArray(val) && val.length === 0) || val === '') {
-          setError(`Please answer: "${q.text}"`);
+          setError(t('answerPrompt').replace('{question}', q.text));
           return false;
         }
       }
@@ -63,7 +65,7 @@ export default function ResponseForm({ survey }: ResponseFormProps) {
       if (axios.isAxiosError(err) && err.response?.data?.message) {
         setError(String(err.response.data.message));
       } else {
-        setError('Failed to submit response. Please try again.');
+        setError(t('failedSubmitResponse'));
       }
     } finally {
       setSubmitting(false);
@@ -72,7 +74,7 @@ export default function ResponseForm({ survey }: ResponseFormProps) {
 
   const handleRatingSubmit = async () => {
     if (ratingValue < 1 || ratingValue > 5) {
-      setRatingError('Please select a star rating from 1 to 5, or skip this step.');
+      setRatingError(t('selectStarRating'));
       return;
     }
 
@@ -92,10 +94,10 @@ export default function ResponseForm({ survey }: ResponseFormProps) {
         if (backendMessage || backendError) {
           setRatingError(String(backendMessage ?? backendError));
         } else {
-          setRatingError('Failed to submit rating. Please try again.');
+          setRatingError(t('failedSubmitRating'));
         }
       } else {
-        setRatingError('Failed to submit rating. Please try again.');
+        setRatingError(t('failedSubmitRating'));
       }
     } finally {
       setRatingSubmitting(false);
@@ -106,13 +108,13 @@ export default function ResponseForm({ survey }: ResponseFormProps) {
     return (
       <div className="text-center py-16 space-y-5">
         <div className="text-5xl">🎉</div>
-        <h2 className="text-2xl font-bold text-gray-900">Thank you!</h2>
-        <p className="text-gray-500">Your response has been submitted successfully.</p>
+        <h2 className="text-2xl font-bold text-gray-900">{t('thankYou')}</h2>
+        <p className="text-gray-500">{t('responseSubmittedSuccess')}</p>
 
         {!ratingSubmitted && (
           <div className="max-w-md mx-auto text-left bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-lg p-4 space-y-3">
             <h3 className="text-base font-semibold text-gray-900 dark:text-gray-100">
-              Rate this survey (optional)
+              {t('rateSurveyOptional')}
             </h3>
             <RatingComponent
               value={ratingValue}
@@ -131,28 +133,28 @@ export default function ResponseForm({ survey }: ResponseFormProps) {
                 disabled={ratingSubmitting}
                 className="bg-indigo-600 text-white px-4 py-2 rounded-md text-sm hover:bg-indigo-700 disabled:opacity-50 transition-colors"
               >
-                {ratingSubmitting ? 'Submitting rating...' : 'Submit rating'}
+                {ratingSubmitting ? t('submittingRating') : t('submitRating')}
               </button>
               <button
                 type="button"
                 onClick={() => navigate('/')}
                 className="border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-200 px-4 py-2 rounded-md text-sm hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
               >
-                Skip
+                {t('skip')}
               </button>
             </div>
           </div>
         )}
 
         {ratingSubmitted && (
-          <p className="text-sm text-green-600">Thanks for rating this survey.</p>
+          <p className="text-sm text-green-600">{t('thanksForRating')}</p>
         )}
 
         <button
           onClick={() => navigate('/')}
           className="bg-indigo-600 text-white px-6 py-2 rounded-md hover:bg-indigo-700 transition-colors"
         >
-          Back to surveys
+          {t('backToSurveys')}
         </button>
       </div>
     );
@@ -188,7 +190,7 @@ export default function ResponseForm({ survey }: ResponseFormProps) {
         disabled={submitting}
         className="w-full bg-indigo-600 text-white py-2.5 rounded-md font-medium hover:bg-indigo-700 disabled:opacity-50 transition-colors"
       >
-        {submitting ? 'Submitting...' : 'Submit Response'}
+        {submitting ? t('submitting') : t('submitResponse')}
       </button>
     </form>
   );

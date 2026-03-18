@@ -6,6 +6,7 @@ import { QuestionType } from '../../types/Question';
 import { surveyService } from '../../services/surveyService';
 import Loading from '../Common/Loading';
 import { useAuth } from '../../hooks/useAuth';
+import { useLanguage } from '../../hooks/useLanguage';
 
 const QUESTION_TYPES: QuestionType[] = ['TEXT', 'MULTIPLE_CHOICE', 'RATING', 'CHECKBOX', 'SLIDER'];
 const STATUSES: SurveyStatus[] = ['DRAFT', 'ACTIVE', 'CLOSED'];
@@ -14,6 +15,7 @@ export default function SurveyForm() {
   const { id } = useParams<{ id: string }>();
   const isEdit = Boolean(id);
   const { user, isAdmin } = useAuth();
+  const { t } = useLanguage();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(isEdit);
   const [serverError, setServerError] = useState('');
@@ -46,7 +48,7 @@ export default function SurveyForm() {
         .then((survey) => {
           const canEditSurvey = isAdmin || user?.id === survey.createdBy?.id;
           if (!canEditSurvey) {
-            setServerError('You can only edit surveys that you created.');
+            setServerError(t('onlyViewCreatedResponses'));
             navigate('/dashboard');
             return;
           }
@@ -80,7 +82,7 @@ export default function SurveyForm() {
     } catch (err: unknown) {
       const axiosErr = err as { response?: { data?: { message?: string } } };
       const msg = axiosErr?.response?.data?.message;
-      setServerError(msg ?? 'Failed to save survey. Please try again.');
+      setServerError(msg ?? t('failedSubmitResponse'));
     }
   };
 
@@ -88,7 +90,7 @@ export default function SurveyForm() {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="max-w-2xl mx-auto space-y-6">
-      <h1 className="text-2xl font-bold text-gray-900">{isEdit ? 'Edit Survey' : 'Create Survey'}</h1>
+      <h1 className="text-2xl font-bold text-gray-900">{isEdit ? t('editSurvey') : t('createSurveyPlain')}</h1>
 
       {serverError && (
         <div className="p-3 bg-red-50 border border-red-200 text-red-700 rounded-md text-sm">
@@ -98,27 +100,27 @@ export default function SurveyForm() {
 
       <div className="bg-white rounded-lg border border-gray-200 p-5 space-y-4">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Title *</label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">{t('title')} *</label>
           <input
-            {...register('title', { required: 'Title is required' })}
+            {...register('title', { required: t('titleRequired') })}
             className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-            placeholder="Survey title"
+            placeholder={t('surveyTitlePlaceholder')}
           />
           {errors.title && <p className="mt-1 text-xs text-red-600">{errors.title.message}</p>}
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">{t('description')}</label>
           <textarea
             {...register('description')}
             rows={3}
             className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-            placeholder="Describe your survey..."
+            placeholder={t('describeSurvey')}
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">{t('status')}</label>
           <select
             {...register('status')}
             className="border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
@@ -132,13 +134,13 @@ export default function SurveyForm() {
 
       <div className="space-y-4">
         <div className="flex items-center justify-between">
-          <h2 className="text-lg font-semibold text-gray-800">Questions</h2>
+          <h2 className="text-lg font-semibold text-gray-800">{t('questions')}</h2>
           <button
             type="button"
             onClick={() => appendQuestion({ text: '', type: 'TEXT', required: false, options: [] })}
             className="bg-indigo-50 text-indigo-700 px-3 py-1.5 rounded-md text-sm hover:bg-indigo-100 transition-colors"
           >
-            + Add Question
+            {t('addQuestion')}
           </button>
         </div>
 
@@ -155,7 +157,7 @@ export default function SurveyForm() {
 
         {questionFields.length === 0 && (
           <p className="text-sm text-gray-400 text-center py-6 border-2 border-dashed border-gray-200 rounded-lg">
-            No questions yet. Click "+ Add Question" to start.
+            {t('noQuestionsYetLong')}
           </p>
         )}
       </div>
@@ -166,14 +168,14 @@ export default function SurveyForm() {
           disabled={isSubmitting}
           className="bg-indigo-600 text-white px-6 py-2 rounded-md hover:bg-indigo-700 disabled:opacity-50 transition-colors"
         >
-          {isSubmitting ? 'Saving...' : isEdit ? 'Save Changes' : 'Create Survey'}
+          {isSubmitting ? t('saving') : isEdit ? t('saveChanges') : t('createSurveyPlain')}
         </button>
         <button
           type="button"
           onClick={() => navigate(-1)}
           className="border border-gray-300 text-gray-700 px-6 py-2 rounded-md hover:bg-gray-50 transition-colors"
         >
-          Cancel
+          {t('cancel')}
         </button>
       </div>
     </form>
@@ -192,6 +194,7 @@ interface QuestionEditorProps {
 }
 
 function QuestionEditor({ index, register, control, watch, onRemove }: QuestionEditorProps) {
+  const { t } = useLanguage();
   const qType = watch(`questions.${index}.type`);
   const hasOptions = qType === 'MULTIPLE_CHOICE' || qType === 'CHECKBOX';
 
@@ -223,14 +226,14 @@ function QuestionEditor({ index, register, control, watch, onRemove }: QuestionE
         <input
           {...register(`questions.${index}.text`, { required: true })}
           className="flex-1 border border-gray-300 rounded-md px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-          placeholder="Question text"
+          placeholder={t('questionText')}
         />
         <button
           type="button"
           onClick={onRemove}
           className="text-red-500 hover:text-red-700 text-xs px-2 py-1 rounded hover:bg-red-50"
         >
-          Remove
+          {t('remove')}
         </button>
       </div>
 
@@ -245,13 +248,13 @@ function QuestionEditor({ index, register, control, watch, onRemove }: QuestionE
         </select>
         <label className="flex items-center gap-1.5 text-sm text-gray-600">
           <input type="checkbox" {...register(`questions.${index}.required`)} className="rounded" />
-          Required
+          {t('required')}
         </label>
       </div>
 
       {hasOptions && (
         <div className="space-y-2 pl-4 border-l-2 border-indigo-100">
-          <p className="text-xs text-gray-500 font-medium">Options</p>
+          <p className="text-xs text-gray-500 font-medium">{t('options')}</p>
           {optionFields.map((opt, oi) => (
             <div key={opt.id} className="flex items-center gap-2">
               <input
@@ -273,7 +276,7 @@ function QuestionEditor({ index, register, control, watch, onRemove }: QuestionE
             onClick={() => appendOption({ text: '' })}
             className="text-xs text-indigo-600 hover:text-indigo-800"
           >
-            + Add option
+            {t('addOption')}
           </button>
         </div>
       )}

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Survey } from '../../types/Survey';
 import { useAuth } from '../../hooks/useAuth';
+import { useLanguage } from '../../hooks/useLanguage';
 import { surveyService } from '../../services/surveyService';
 
 const STATUS_COLORS: Record<string, string> = {
@@ -17,6 +18,7 @@ interface SurveyCardProps {
 
 export default function SurveyCard({ survey, onDeleted }: SurveyCardProps) {
   const { isAdmin, user } = useAuth();
+  const { t } = useLanguage();
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [deleteError, setDeleteError] = useState('');
   const canEditSurvey = isAdmin || user?.id === survey.createdBy?.id;
@@ -26,7 +28,7 @@ export default function SurveyCard({ survey, onDeleted }: SurveyCardProps) {
       await surveyService.deleteSurvey(survey.id);
       onDeleted?.();
     } catch {
-      setDeleteError('Failed to delete survey');
+      setDeleteError(t('failedDeleteSurvey'));
       setConfirmDelete(false);
     }
   };
@@ -59,7 +61,7 @@ export default function SurveyCard({ survey, onDeleted }: SurveyCardProps) {
             to={`/surveys/${survey.id}`}
             className="w-full text-center bg-indigo-600 text-white text-sm px-3 py-2 rounded-md hover:bg-indigo-700 transition-colors"
           >
-            Fill Survey
+            {t('fillSurvey')}
           </Link>
         )}
         {canEditSurvey && (
@@ -67,7 +69,7 @@ export default function SurveyCard({ survey, onDeleted }: SurveyCardProps) {
             to={`/surveys/${survey.id}/responses`}
             className="w-full text-center bg-blue-600 text-white text-sm px-3 py-2 rounded-md hover:bg-blue-700 transition-colors"
           >
-            Check Responses
+            {t('checkResponses')}
           </Link>
         )}
         {canEditSurvey && (
@@ -75,7 +77,7 @@ export default function SurveyCard({ survey, onDeleted }: SurveyCardProps) {
             to={`/surveys/${survey.id}/edit`}
             className="w-full text-center border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-200 text-sm px-3 py-2 rounded-md hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
           >
-            Edit
+            {t('edit')}
           </Link>
         )}
         {isAdmin && (
@@ -86,13 +88,13 @@ export default function SurveyCard({ survey, onDeleted }: SurveyCardProps) {
                   onClick={handleDelete}
                   className="text-xs text-white bg-red-600 hover:bg-red-700 px-2 py-1 rounded"
                 >
-                  Confirm
+                  {t('confirm')}
                 </button>
                 <button
                   onClick={() => setConfirmDelete(false)}
                   className="text-xs text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-gray-100 px-2 py-1 rounded hover:bg-gray-100 dark:hover:bg-gray-800"
                 >
-                  Cancel
+                  {t('cancel')}
                 </button>
               </div>
             ) : (
@@ -100,7 +102,7 @@ export default function SurveyCard({ survey, onDeleted }: SurveyCardProps) {
                 onClick={() => setConfirmDelete(true)}
                 className="w-full text-sm text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 px-3 py-2 rounded-md hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
               >
-                Delete
+                {t('delete')}
               </button>
             )}
           </>

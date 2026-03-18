@@ -10,65 +10,66 @@
     <div class="grain" aria-hidden="true"></div>
 
     <header class="hero">
-      <p class="eyebrow">Survey App</p>
-      <h1>Let us hear from you</h1>
-      <p class="subtitle">Questions, feedback, and partnership ideas are all welcome.</p>
+      <p class="eyebrow" data-i18n="brand">Survey App</p>
+      <h1 data-i18n="contacts.title">Let us hear from you</h1>
+      <p class="subtitle" data-i18n="contacts.subtitle">Questions, feedback, and partnership ideas are all welcome.</p>
       <div class="top-actions">
         <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Toggle theme">Dark mode</button>
-        <a class="home-link" href="/">Back to app</a>
+        <button class="theme-toggle" id="language-toggle" type="button" aria-label="Switch language">БГ</button>
+        <a class="home-link" id="home-link" href="/" data-i18n="contacts.backToApp">Back to app</a>
       </div>
     </header>
 
     <main class="layout">
       <section class="card info" aria-label="Contact details">
-        <h2>Get in touch</h2>
-        <p>Choose the channel that works best for your team.</p>
+        <h2 data-i18n="contacts.getInTouch">Get in touch</h2>
+        <p data-i18n="contacts.chooseChannel">Choose the channel that works best for your team.</p>
 
         <ul class="contact-list">
           <li>
-            <span class="label">Email</span>
+            <span class="label" data-i18n="contacts.email">Email</span>
             <a href="mailto:krisnik1000@gmail.com">krisnik1000@gmail.com</a>
           </li>
           <li>
-            <span class="label">Phone</span>
+            <span class="label" data-i18n="contacts.phone">Phone</span>
             <a href="tel:+359878823320">+359 8788 23320</a>
           </li>
           <li>
-            <span class="label">Office</span>
+            <span class="label" data-i18n="contacts.office">Office</span>
             <span>g.k. Iztok, ul. Raiko Aleksiew 48, Sofia, Bulgaria</span>
           </li>
         </ul>
 
         <div class="hours">
-          <h3>Support hours</h3>
-          <p>Mon-Fri: 10:00 - 17:00 CET</p>
+          <h3 data-i18n="contacts.supportHours">Support hours</h3>
+          <p data-i18n="contacts.supportHoursValue">Mon-Fri: 10:00 - 17:00 CET</p>
         </div>
       </section>
 
       <section class="card form-wrap" aria-label="Contact form">
-        <h2>Send a message</h2>
+        <h2 data-i18n="contacts.sendMessage">Send a message</h2>
         <form>
-          <label>
+          <label data-i18n="contacts.fullName">
             Full name
-            <input type="text" name="name" placeholder="Jane Doe" required />
+            <input type="text" name="name" placeholder="Jane Doe" data-i18n-placeholder="contacts.namePlaceholder" required />
           </label>
 
-          <label>
+          <label data-i18n="contacts.email">
             Email
-            <input type="email" name="email" placeholder="jane@company.com" required />
+            <input type="email" name="email" placeholder="jane@company.com" data-i18n-placeholder="contacts.emailPlaceholder" required />
           </label>
 
-          <label>
+          <label data-i18n="contacts.subject">
             Subject
-            <input type="text" name="subject" placeholder="How can we collaborate?" required />
+            <input type="text" name="subject" placeholder="How can we collaborate?" data-i18n-placeholder="contacts.subjectPlaceholder" required />
           </label>
 
-          <label>
+          <label data-i18n="contacts.message">
             Message
-            <textarea name="message" rows="5" placeholder="Write your message here..." required></textarea>
+            <textarea name="message" rows="5" placeholder="Write your message here..." data-i18n-placeholder="contacts.messagePlaceholder" required></textarea>
           </label>
 
-          <button type="submit">Send message</button>
+          <button type="submit" id="send-message-button" data-i18n="contacts.sendMessageButton">Send message</button>
         </form>
       </section>
     </main>

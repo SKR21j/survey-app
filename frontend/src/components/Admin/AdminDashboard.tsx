@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { Survey } from '../../types/Survey';
 import { surveyService } from '../../services/surveyService';
 import Loading from '../Common/Loading';
+import { useLanguage } from '../../hooks/useLanguage';
 
 interface Stats {
   total: number;
@@ -13,6 +14,7 @@ interface Stats {
 }
 
 export default function AdminDashboard() {
+  const { t } = useLanguage();
   const [surveys, setSurveys] = useState<Survey[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -35,21 +37,21 @@ export default function AdminDashboard() {
   };
 
   const statCards = [
-    { label: 'Total Surveys', value: stats.total, color: 'bg-indigo-50 text-indigo-700' },
-    { label: 'Active', value: stats.active, color: 'bg-green-50 text-green-700' },
-    { label: 'Draft', value: stats.draft, color: 'bg-gray-50 text-gray-700' },
-    { label: 'Total Responses', value: stats.totalResponses, color: 'bg-blue-50 text-blue-700' },
+    { label: t('totalSurveys'), value: stats.total, color: 'bg-indigo-50 text-indigo-700' },
+    { label: t('active'), value: stats.active, color: 'bg-green-50 text-green-700' },
+    { label: t('draft'), value: stats.draft, color: 'bg-gray-50 text-gray-700' },
+    { label: t('totalResponses'), value: stats.totalResponses, color: 'bg-blue-50 text-blue-700' },
   ];
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
+        <h1 className="text-2xl font-bold text-gray-900">{t('dashboard')}</h1>
         <Link
           to="/surveys/create"
           className="bg-indigo-600 text-white px-4 py-2 rounded-md text-sm hover:bg-indigo-700 transition-colors"
         >
-          + Create Survey
+          {t('createSurvey')}
         </Link>
       </div>
 
@@ -64,7 +66,7 @@ export default function AdminDashboard() {
 
       <div className="bg-white rounded-lg border border-gray-200">
         <div className="px-5 py-4 border-b border-gray-200">
-          <h2 className="font-semibold text-gray-800">Recent Surveys</h2>
+          <h2 className="font-semibold text-gray-800">{t('recentSurveys')}</h2>
         </div>
         <div className="divide-y divide-gray-100">
           {surveys.slice(0, 10).map((survey) => (
@@ -72,7 +74,7 @@ export default function AdminDashboard() {
               <div>
                 <p className="text-sm font-medium text-gray-900">{survey.title}</p>
                 <p className="text-xs text-gray-400">
-                  {survey.questions.length} questions · {survey.responseCount ?? 0} responses
+                  {survey.questions.length} {t('questions')} · {survey.responseCount ?? 0} {t('responses')}
                 </p>
               </div>
               <div className="flex items-center gap-2">
@@ -91,13 +93,13 @@ export default function AdminDashboard() {
                   to={`/surveys/${survey.id}/edit`}
                   className="text-xs text-indigo-600 hover:underline"
                 >
-                  Edit
+                  {t('edit')}
                 </Link>
               </div>
             </div>
           ))}
           {surveys.length === 0 && (
-            <p className="text-center text-gray-400 text-sm py-8">No surveys yet.</p>
+            <p className="text-center text-gray-400 text-sm py-8">{t('noSurveysYet')}</p>
           )}
         </div>
       </div>

@@ -1,17 +1,19 @@
 import { NavLink } from 'react-router-dom';
-
-const links = [
-  { to: '/dashboard', label: '📊 Dashboard' },
-  { to: '/surveys/create', label: '➕ Create Survey' },
-  { to: '/dashboard?tab=analytics', label: '📈 Analytics' },
-];
+import { useLanguage } from '../../hooks/useLanguage';
 
 export default function Sidebar() {
+  const { t } = useLanguage();
+  const links = [
+    { to: '/dashboard', label: `📊 ${t('dashboard')}` },
+    { to: '/surveys/create', label: `➕ ${t('createSurvey').replace('+ ', '')}` },
+    { to: '/dashboard?tab=analytics', label: `📈 ${t('analytics')}` },
+  ];
+
   return (
     <aside className="w-56 bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800 min-h-screen transition-colors">
       <nav className="p-4 space-y-1">
         <p className="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-3">
-          Admin Menu
+          {t('adminMenu')}
         </p>
         {links.map(({ to, label }) => (
           <NavLink

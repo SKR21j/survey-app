@@ -1,10 +1,12 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
+import { useLanguage } from '../../hooks/useLanguage';
 import { useTheme } from '../../hooks/useTheme';
 
 export default function Header() {
   const { user, logout } = useAuth();
   const { isDark, toggleTheme } = useTheme();
+  const { isBulgarian, t, toggleLanguage } = useLanguage();
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -22,16 +24,25 @@ export default function Header() {
 
           <nav className="flex items-center gap-6">
             <Link to="/" className="hover:text-indigo-200 dark:hover:text-gray-300 transition-colors">
-              Home
+              {t('home')}
             </Link>
             <a href="/contacts.html" className="hover:text-indigo-200 dark:hover:text-gray-300 transition-colors">
-              Contact
+              {t('contact')}
             </a>
             {user && (
               <Link to="/dashboard" className="hover:text-indigo-200 dark:hover:text-gray-300 transition-colors">
-                Dashboard
+                {t('dashboard')}
               </Link>
             )}
+            <button
+              onClick={toggleLanguage}
+              className="px-3 py-1 text-sm rounded-md border border-white/40 hover:bg-white/10 transition-colors"
+              type="button"
+              aria-label={isBulgarian ? 'Switch language to English' : 'Превключи езика на български'}
+              title={isBulgarian ? 'Switch to English' : 'Превключи на български'}
+            >
+              {isBulgarian ? 'EN' : 'БГ'}
+            </button>
             <button
               onClick={toggleTheme}
               className="px-3 py-1 text-sm rounded-md border border-white/40 hover:bg-white/10 transition-colors"
@@ -39,7 +50,7 @@ export default function Header() {
               aria-label="Toggle dark mode"
               title="Toggle dark mode"
             >
-              {isDark ? 'Light' : 'Dark'}
+              {isDark ? t('light') : t('dark')}
             </button>
             {user ? (
               <div className="flex items-center gap-4">
@@ -50,7 +61,7 @@ export default function Header() {
                   onClick={handleLogout}
                   className="bg-white text-indigo-600 dark:bg-gray-100 dark:text-gray-900 px-3 py-1 rounded-md text-sm font-medium hover:bg-indigo-50 dark:hover:bg-white transition-colors"
                 >
-                  Logout
+                  {t('logout')}
                 </button>
               </div>
             ) : (
@@ -59,13 +70,13 @@ export default function Header() {
                   to="/login"
                   className="bg-white text-indigo-600 dark:bg-gray-100 dark:text-gray-900 px-3 py-1 rounded-md text-sm font-medium hover:bg-indigo-50 dark:hover:bg-white transition-colors"
                 >
-                  Login
+                  {t('login')}
                 </Link>
                 <Link
                   to="/register"
                   className="border border-white text-white px-3 py-1 rounded-md text-sm font-medium hover:bg-indigo-700 dark:hover:bg-gray-800 transition-colors"
                 >
-                  Register
+                  {t('register')}
                 </Link>
               </div>
             )}

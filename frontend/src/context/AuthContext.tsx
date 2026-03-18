@@ -83,9 +83,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 interface ProtectedRouteProps {
   children: React.ReactNode;
   requireAdmin?: boolean;
+  requireUser?: boolean;
 }
 
-export function ProtectedRoute({ children, requireAdmin = false }: ProtectedRouteProps) {
+export function ProtectedRoute({ children, requireAdmin = false, requireUser = false }: ProtectedRouteProps) {
   const token = getToken();
   const user = getStoredUser();
 
@@ -94,6 +95,10 @@ export function ProtectedRoute({ children, requireAdmin = false }: ProtectedRout
   }
 
   if (requireAdmin && user?.role !== 'ADMIN') {
+    return <Navigate to="/" replace />;
+  }
+
+  if (requireUser && user?.role !== 'USER') {
     return <Navigate to="/" replace />;
   }
 

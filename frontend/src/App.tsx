@@ -23,7 +23,14 @@ export default function App() {
                 <Route path="/" element={<HomePage />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
-                <Route path="/surveys/:id" element={<SurveyPage />} />
+                <Route
+                  path="/surveys/:id"
+                  element={
+                    <ProtectedRoute requireUser>
+                      <SurveyPage />
+                    </ProtectedRoute>
+                  }
+                />
                 <Route
                   path="/surveys/:id/responses"
                   element={

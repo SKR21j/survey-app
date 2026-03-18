@@ -10,6 +10,18 @@
   --shadow: 0 18px 40px rgba(15, 62, 130, 0.18);
 }
 
+:root.dark {
+  --bg-1: #101a2a;
+  --bg-2: #1c2a3b;
+  --panel: #1b2637cc;
+  --ink: #e7eef8;
+  --muted: #b5c4d7;
+  --line: #3a4b63;
+  --accent: #4ba0ff;
+  --accent-2: #69beff;
+  --shadow: 0 18px 40px rgba(4, 8, 20, 0.5);
+}
+
 * {
   box-sizing: border-box;
 }
@@ -64,6 +76,48 @@ h1 {
   max-width: 52ch;
 }
 
+.top-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 16px;
+  flex-wrap: wrap;
+}
+
+.theme-toggle,
+.home-link {
+  margin-top: 0;
+  border-radius: 11px;
+  padding: 10px 14px;
+  font: inherit;
+  font-weight: 700;
+  color: #fff;
+  text-decoration: none;
+  background: linear-gradient(115deg, var(--accent), var(--accent-2));
+  box-shadow: 0 10px 22px rgba(10, 88, 182, 0.26);
+  transition: transform 140ms ease, box-shadow 140ms ease;
+}
+
+.home-link {
+  display: inline-flex;
+  align-items: center;
+}
+
+.theme-toggle {
+  border: none;
+  cursor: pointer;
+}
+
+.home-link:hover {
+  text-decoration: none;
+  transform: translateY(-1px);
+  box-shadow: 0 12px 26px rgba(10, 88, 182, 0.34);
+}
+
+.theme-toggle:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 12px 26px rgba(10, 88, 182, 0.34);
+}
+
 .layout {
   max-width: 1080px;
   margin: 0 auto;
@@ -111,6 +165,10 @@ h2 {
   background: #ffffffb0;
 }
 
+:root.dark .contact-list li {
+  background: #202e43cc;
+}
+
 .label {
   font-size: 0.78rem;
   letter-spacing: 0.07em;
@@ -122,6 +180,10 @@ h2 {
 a {
   color: #0357c4;
   text-decoration: none;
+}
+
+:root.dark a {
+  color: #8dc6ff;
 }
 
 a:hover {

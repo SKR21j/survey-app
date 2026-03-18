@@ -43,6 +43,21 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     localStorage.setItem(STORAGE_KEY, theme);
   }, [theme]);
 
+  useEffect(() => {
+    const onStorage = (event: StorageEvent) => {
+      if (event.key !== STORAGE_KEY) {
+        return;
+      }
+
+      if (event.newValue === 'dark' || event.newValue === 'light') {
+        setTheme(event.newValue);
+      }
+    };
+
+    window.addEventListener('storage', onStorage);
+    return () => window.removeEventListener('storage', onStorage);
+  }, []);
+
   const value = useMemo<ThemeContextValue>(() => ({
     theme,
     isDark: theme === 'dark',

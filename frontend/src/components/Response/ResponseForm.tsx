@@ -86,8 +86,14 @@ export default function ResponseForm({ survey }: ResponseFormProps) {
       });
       setRatingSubmitted(true);
     } catch (err) {
-      if (axios.isAxiosError(err) && err.response?.data?.message) {
-        setRatingError(String(err.response.data.message));
+      if (axios.isAxiosError(err)) {
+        const backendMessage = err.response?.data?.message;
+        const backendError = err.response?.data?.error;
+        if (backendMessage || backendError) {
+          setRatingError(String(backendMessage ?? backendError));
+        } else {
+          setRatingError('Failed to submit rating. Please try again.');
+        }
       } else {
         setRatingError('Failed to submit rating. Please try again.');
       }

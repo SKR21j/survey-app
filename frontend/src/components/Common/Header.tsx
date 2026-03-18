@@ -24,6 +24,9 @@ export default function Header() {
             <Link to="/" className="hover:text-indigo-200 dark:hover:text-gray-300 transition-colors">
               Home
             </Link>
+            <a href="/contacts.html" className="hover:text-indigo-200 dark:hover:text-gray-300 transition-colors">
+              Contact
+            </a>
             {user && (
               <Link to="/dashboard" className="hover:text-indigo-200 dark:hover:text-gray-300 transition-colors">
                 Dashboard

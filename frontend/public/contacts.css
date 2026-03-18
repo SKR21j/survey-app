@@ -1,6 +1,6 @@
 :root {
-  --bg-1: #fdf7ef;
-  --bg-2: #e8f3ff;
+  --bg-1: #f3f5f8;
+  --bg-2: #e4e9f0;
   --panel: #ffffffcc;
   --ink: #152336;
   --muted: #4a5b70;
@@ -32,8 +32,8 @@ body {
   font-family: "Segoe UI", "Trebuchet MS", sans-serif;
   color: var(--ink);
   background:
-    radial-gradient(90rem 50rem at 15% -10%, #fff6d9 0%, transparent 55%),
-    radial-gradient(80rem 45rem at 100% 0%, #d7ebff 0%, transparent 45%),
+    radial-gradient(90rem 50rem at 15% -10%, #f7f9fc 0%, transparent 55%),
+    radial-gradient(80rem 45rem at 100% 0%, #dde4ef 0%, transparent 45%),
     linear-gradient(135deg, var(--bg-1), var(--bg-2));
   position: relative;
   overflow-x: hidden;

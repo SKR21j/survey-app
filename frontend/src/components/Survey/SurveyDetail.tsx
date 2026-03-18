@@ -60,7 +60,7 @@ export default function SurveyDetail() {
       </div>
 
       <div className="flex gap-3">
-        {survey.status === 'ACTIVE' && user?.role === 'USER' && (
+        {survey.status === 'ACTIVE' && (user?.role === 'USER' || isAdmin) && (
           <Link
             to={`/surveys/${survey.id}`}
             className="bg-indigo-600 text-white px-5 py-2 rounded-md hover:bg-indigo-700 transition-colors"

@@ -54,7 +54,7 @@ export default function SurveyCard({ survey, onDeleted }: SurveyCardProps) {
       </div>
 
       <div className="grid grid-cols-2 gap-2 mt-auto pt-2 border-t border-gray-100 dark:border-gray-800">
-        {survey.status === 'ACTIVE' && user?.role === 'USER' && (
+        {survey.status === 'ACTIVE' && (user?.role === 'USER' || isAdmin) && (
           <Link
             to={`/surveys/${survey.id}`}
             className="w-full text-center bg-indigo-600 text-white text-sm px-3 py-2 rounded-md hover:bg-indigo-700 transition-colors"

@@ -26,7 +26,7 @@ export default function App() {
                 <Route
                   path="/surveys/:id"
                   element={
-                    <ProtectedRoute requireUser>
+                    <ProtectedRoute>
                       <SurveyPage />
                     </ProtectedRoute>
                   }

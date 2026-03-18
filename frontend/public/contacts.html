@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Contact Us | Survey App</title>
+    <link rel="stylesheet" href="./contacts.css" />
+  </head>
+  <body>
+    <div class="grain" aria-hidden="true"></div>
+
+    <header class="hero">
+      <p class="eyebrow">Survey App</p>
+      <h1>Let us hear from you</h1>
+      <p class="subtitle">Questions, feedback, and partnership ideas are all welcome.</p>
+    </header>
+
+    <main class="layout">
+      <section class="card info" aria-label="Contact details">
+        <h2>Get in touch</h2>
+        <p>Choose the channel that works best for your team.</p>
+
+        <ul class="contact-list">
+          <li>
+            <span class="label">Email</span>
+            <a href="mailto:support@surveyapp.local">support@surveyapp.local</a>
+          </li>
+          <li>
+            <span class="label">Phone</span>
+            <a href="tel:+15550128900">+1 (555) 012-8900</a>
+          </li>
+          <li>
+            <span class="label">Office</span>
+            <span>74 Market Street, Suite 300, Stockholm</span>
+          </li>
+        </ul>
+
+        <div class="hours">
+          <h3>Support hours</h3>
+          <p>Mon-Fri: 08:00 - 18:00 CET</p>
+        </div>
+      </section>
+
+      <section class="card form-wrap" aria-label="Contact form">
+        <h2>Send a message</h2>
+        <form>
+          <label>
+            Full name
+            <input type="text" name="name" placeholder="Jane Doe" required />
+          </label>
+
+          <label>
+            Email
+            <input type="email" name="email" placeholder="jane@company.com" required />
+          </label>
+
+          <label>
+            Subject
+            <input type="text" name="subject" placeholder="How can we collaborate?" required />
+          </label>
+
+          <label>
+            Message
+            <textarea name="message" rows="5" placeholder="Write your message here..." required></textarea>
+          </label>
+
+          <button type="submit">Send message</button>
+        </form>
+      </section>
+    </main>
+  </body>
+</html>

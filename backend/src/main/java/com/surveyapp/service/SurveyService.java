@@ -6,6 +6,7 @@ import com.surveyapp.exception.ResourceNotFoundException;
 import com.surveyapp.model.Question;
 import com.surveyapp.model.Survey;
 import com.surveyapp.model.User;
+import com.surveyapp.repository.RatingRepository;
 import com.surveyapp.repository.ResponseRepository;
 import com.surveyapp.repository.SurveyRepository;
 import com.surveyapp.repository.UserRepository;
@@ -31,6 +32,7 @@ public class SurveyService {
     private final SurveyRepository surveyRepository;
     private final UserRepository userRepository;
     private final ResponseRepository responseRepository;
+    private final RatingRepository ratingRepository;
 
     @Transactional(readOnly = true)
     public Page<Survey> getVisibleSurveys(Pageable pageable) {
@@ -181,6 +183,8 @@ public class SurveyService {
             }
             // Populate response count
             s.setResponseCount(responseRepository.countBySurveyId(s.getId()));
+            // Populate average rating
+            s.setAverageRating(ratingRepository.findAverageScoreBySurveyId(s.getId()).orElse(0.0));
         });
     }
 }

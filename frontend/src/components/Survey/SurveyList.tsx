@@ -15,9 +15,10 @@ const STATUSES: { value: SurveyStatus | ''; label: string }[] = [
 
 interface SurveyListProps {
   activeOnly?: boolean;
+  searchTerm?: string;
 }
 
-export default function SurveyList({ activeOnly = false }: SurveyListProps) {
+export default function SurveyList({ activeOnly = false, searchTerm = '' }: SurveyListProps) {
   const { user } = useAuth();
   const [surveys, setSurveys] = useState<Survey[]>([]);
   const [loading, setLoading] = useState(true);
@@ -29,7 +30,8 @@ export default function SurveyList({ activeOnly = false }: SurveyListProps) {
     setLoading(true);
     try {
       const params: SurveyListParams = {};
-      if (search) params.search = search;
+      const effectiveSearch = activeOnly ? searchTerm.trim() : search.trim();
+      if (effectiveSearch) params.search = effectiveSearch;
       if (status) params.status = status;
       if (sort) params.sort = sort;
       if (activeOnly) params.status = 'ACTIVE';
@@ -46,7 +48,7 @@ export default function SurveyList({ activeOnly = false }: SurveyListProps) {
   useEffect(() => {
     void fetchSurveys();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [search, status, sort, activeOnly]);
+  }, [search, searchTerm, status, sort, activeOnly]);
 
   return (
     <div className="space-y-4">

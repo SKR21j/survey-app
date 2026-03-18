@@ -9,7 +9,7 @@ export default function DashboardPage() {
   return (
     <div className="flex min-h-screen">
       {isAdmin && <Sidebar />}
-      <main className="flex-1 p-6 space-y-8 bg-gray-50 dark:bg-gray-900 transition-colors">
+      <main className="flex-1 p-6 space-y-8 bg-gray-50 dark:bg-gray-800 transition-colors">
         {isAdmin && <AdminDashboard />}
         <div>
           <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4">

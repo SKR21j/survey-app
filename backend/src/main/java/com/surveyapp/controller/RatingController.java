@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.Map;
 
 @RestController
@@ -22,14 +23,31 @@ public class RatingController {
 
     private final RatingService ratingService;
 
+    public record RatingResponse(
+            Long id,
+            Long surveyId,
+            Long userId,
+            int score,
+            String comment,
+            LocalDateTime createdAt
+    ) {}
+
     @PostMapping("/ratings")
     @Operation(summary = "Rate a survey", security = @SecurityRequirement(name = "bearerAuth"))
-    public ResponseEntity<Rating> rateSurvey(
+    public ResponseEntity<RatingResponse> rateSurvey(
             @PathVariable Long id,
             @RequestParam @Min(1) @Max(5) int score,
             @RequestParam(required = false) String comment) {
         Rating rating = ratingService.rateSurvey(id, score, comment);
-        return ResponseEntity.status(HttpStatus.CREATED).body(rating);
+        RatingResponse response = new RatingResponse(
+                rating.getId(),
+                rating.getSurvey() != null ? rating.getSurvey().getId() : id,
+                rating.getUser() != null ? rating.getUser().getId() : null,
+                rating.getScore(),
+                rating.getComment(),
+                rating.getCreatedAt()
+        );
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @GetMapping("/average-rating")

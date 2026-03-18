@@ -3,6 +3,8 @@ import { Rating, RatingRequest, RatingSummary } from '../types/Rating';
 
 interface BackendRating {
   id: number;
+  surveyId?: number;
+  userId?: number;
   survey?: { id: number };
   user?: { id: number };
   score: number;
@@ -13,8 +15,8 @@ interface BackendRating {
 function mapRating(data: BackendRating, fallbackSurveyId?: number): Rating {
   return {
     id: data.id,
-    surveyId: data.survey?.id ?? fallbackSurveyId ?? 0,
-    userId: data.user?.id ?? 0,
+    surveyId: data.surveyId ?? data.survey?.id ?? fallbackSurveyId ?? 0,
+    userId: data.userId ?? data.user?.id ?? 0,
     value: data.score,
     comment: data.comment,
     createdAt: data.createdAt ?? '',

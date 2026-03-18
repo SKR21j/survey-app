@@ -29,7 +29,7 @@ const translations: Record<string, Record<Language, string>> = {
   allSurveys: { en: 'All Surveys', bg: 'Всички анкети' },
   surveys: { en: 'Surveys', bg: 'Анкети' },
   all: { en: 'All', bg: 'Всички' },
-  active: { en: 'Active', bg: 'Активни' },
+  active: { en: 'Active', bg: 'Активна' },
   draft: { en: 'Draft', bg: 'Чернови' },
   closed: { en: 'Closed', bg: 'Затворени' },
   newestFirst: { en: 'Newest first', bg: 'Най-новите първо' },

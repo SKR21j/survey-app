@@ -7,6 +7,7 @@ export interface SurveyResponse {
   id: number;
   surveyId: number;
   userId: number;
+  username?: string;
   answers: Answer[];
   submittedAt: string;
 }

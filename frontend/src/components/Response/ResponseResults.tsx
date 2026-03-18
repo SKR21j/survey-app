@@ -93,9 +93,16 @@ export default function ResponseResults({ surveyId }: ResponseResultsProps) {
         <p className="text-sm text-gray-500 dark:text-gray-400">{responses.length} response(s) submitted.</p>
         {responses.map((response) => (
           <div key={response.id} className="bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-800 p-4">
-            <p className="text-xs text-gray-500 dark:text-gray-400 mb-2">
-              Submitted: {new Date(response.submittedAt).toLocaleString()}
-            </p>
+            <div className="flex items-center justify-between mb-2">
+              <p className="text-xs text-gray-500 dark:text-gray-400">
+                Submitted: {new Date(response.submittedAt).toLocaleString()}
+              </p>
+              {response.username && (
+                <span className="text-xs font-medium text-indigo-600 dark:text-indigo-400">
+                  {response.username}
+                </span>
+              )}
+            </div>
             <ul className="list-disc list-inside text-sm text-gray-700 dark:text-gray-200 space-y-1">
               {response.answers.map((answer, index) => (
                 <li key={`${response.id}-${index}`}>{Array.isArray(answer.value) ? answer.value.join(', ') : answer.value}</li>

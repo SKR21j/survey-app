@@ -2,7 +2,7 @@ import { SurveyResponse } from '../types/Response';
 import { Survey } from '../types/Survey';
 
 export function exportToCSV(survey: Survey, responses: SurveyResponse[]): void {
-  const headers = ['Response ID', 'Submitted At', ...survey.questions.map((q) => q.text)];
+  const headers = ['Response ID', 'Username', 'Submitted At', ...survey.questions.map((q) => q.text)];
 
   const rows = responses.map((response) => {
     const answerMap: Record<number, string> = {};
@@ -11,6 +11,7 @@ export function exportToCSV(survey: Survey, responses: SurveyResponse[]): void {
     });
     return [
       String(response.id),
+      response.username ?? 'Anonymous',
       response.submittedAt,
       ...survey.questions.map((q, index) => answerMap[q.id] ?? (response.answers[index] ? (Array.isArray(response.answers[index].value) ? response.answers[index].value.join('; ') : String(response.answers[index].value)) : '')),
     ];
@@ -32,6 +33,7 @@ export function exportToJSON(survey: Survey, responses: SurveyResponse[]): void 
     },
     responses: responses.map((r) => ({
       id: r.id,
+      username: r.username ?? 'Anonymous',
       submittedAt: r.submittedAt,
       answers: r.answers.map((a, index) => {
         const question = survey.questions.find((q) => q.id === a.questionId) ?? survey.questions[index];

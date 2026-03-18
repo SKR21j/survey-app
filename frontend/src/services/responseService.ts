@@ -15,6 +15,7 @@ interface BackendResponse {
   answers?: BackendAnswer[];
   user?: {
     id?: number;
+    username?: string;
   };
 }
 
@@ -23,6 +24,7 @@ function mapBackendResponse(surveyId: number, item: BackendResponse): SurveyResp
     id: item.id,
     surveyId,
     userId: item.user?.id ?? 0,
+    username: item.user?.username,
     submittedAt: item.submittedAt,
     answers: (item.answers ?? []).map((a, index) => ({
       questionId: index,

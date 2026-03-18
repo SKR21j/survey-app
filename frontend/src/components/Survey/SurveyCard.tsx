@@ -22,6 +22,7 @@ export default function SurveyCard({ survey, onDeleted }: SurveyCardProps) {
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [deleteError, setDeleteError] = useState('');
   const canEditSurvey = isAdmin || user?.id === survey.createdBy?.id;
+  const statusLabel = survey.status === 'ACTIVE' ? t('active') : survey.status === 'DRAFT' ? t('draft') : t('closed');
 
   const handleDelete = async () => {
     try {
@@ -38,7 +39,7 @@ export default function SurveyCard({ survey, onDeleted }: SurveyCardProps) {
       <div className="flex items-start justify-between gap-2">
         <h3 className="text-base font-semibold text-gray-900 dark:text-gray-100 line-clamp-2">{survey.title}</h3>
         <span className={`text-xs font-medium px-2 py-0.5 rounded-full whitespace-nowrap ${STATUS_COLORS[survey.status]}`}>
-          {survey.status}
+          {statusLabel}
         </span>
       </div>
 

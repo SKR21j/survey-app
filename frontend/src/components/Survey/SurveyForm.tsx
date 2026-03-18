@@ -86,6 +86,12 @@ export default function SurveyForm() {
     }
   };
 
+  const getStatusLabel = (statusValue: SurveyStatus) => {
+    if (statusValue === 'ACTIVE') return t('active');
+    if (statusValue === 'DRAFT') return t('draft');
+    return t('closed');
+  };
+
   if (loading) return <Loading />;
 
   return (
@@ -126,7 +132,7 @@ export default function SurveyForm() {
             className="border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
           >
             {STATUSES.map((s) => (
-              <option key={s} value={s}>{s}</option>
+              <option key={s} value={s}>{getStatusLabel(s)}</option>
             ))}
           </select>
         </div>

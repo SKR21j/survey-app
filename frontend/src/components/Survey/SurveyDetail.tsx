@@ -27,6 +27,7 @@ export default function SurveyDetail() {
   if (!survey) return null;
 
   const canEditSurvey = isAdmin || user?.id === survey.createdBy?.id;
+  const statusLabel = survey.status === 'ACTIVE' ? t('active') : survey.status === 'DRAFT' ? t('draft') : t('closed');
 
   return (
     <div className="max-w-2xl mx-auto space-y-6">
@@ -44,7 +45,7 @@ export default function SurveyDetail() {
               : 'bg-red-100 text-red-700'
           }`}
         >
-          {survey.status}
+          {statusLabel}
         </span>
       </div>
 

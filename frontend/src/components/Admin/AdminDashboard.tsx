@@ -43,6 +43,12 @@ export default function AdminDashboard() {
     { label: t('totalResponses'), value: stats.totalResponses, color: 'bg-blue-50 text-blue-700' },
   ];
 
+  const getStatusLabel = (status: Survey['status']) => {
+    if (status === 'ACTIVE') return t('active');
+    if (status === 'DRAFT') return t('draft');
+    return t('closed');
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -87,7 +93,7 @@ export default function AdminDashboard() {
                       : 'bg-red-100 text-red-700'
                   }`}
                 >
-                  {survey.status}
+                  {getStatusLabel(survey.status)}
                 </span>
                 <Link
                   to={`/surveys/${survey.id}/edit`}

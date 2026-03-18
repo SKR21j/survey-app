@@ -4,7 +4,9 @@ import { useNavigate } from 'react-router-dom';
 import { Survey } from '../../types/Survey';
 import { Answer } from '../../types/Response';
 import { responseService } from '../../services/responseService';
+import { ratingService } from '../../services/ratingService';
 import QuestionRenderer from './QuestionRenderer';
+import RatingComponent from '../Rating/RatingComponent';
 
 interface ResponseFormProps {
   survey: Survey;
@@ -20,6 +22,11 @@ export default function ResponseForm({ survey }: ResponseFormProps) {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
   const [submitted, setSubmitted] = useState(false);
+  const [ratingValue, setRatingValue] = useState(0);
+  const [ratingComment, setRatingComment] = useState('');
+  const [ratingSubmitting, setRatingSubmitting] = useState(false);
+  const [ratingSubmitted, setRatingSubmitted] = useState(false);
+  const [ratingError, setRatingError] = useState('');
 
   const handleAnswer = (questionId: number, value: string | string[]) => {
     setAnswers((prev) => ({ ...prev, [questionId]: value }));
@@ -63,12 +70,78 @@ export default function ResponseForm({ survey }: ResponseFormProps) {
     }
   };
 
+  const handleRatingSubmit = async () => {
+    if (ratingValue < 1 || ratingValue > 5) {
+      setRatingError('Please select a star rating from 1 to 5, or skip this step.');
+      return;
+    }
+
+    setRatingError('');
+    setRatingSubmitting(true);
+    try {
+      await ratingService.rateSurvey({
+        surveyId: survey.id,
+        value: ratingValue,
+        comment: ratingComment.trim() || undefined,
+      });
+      setRatingSubmitted(true);
+    } catch (err) {
+      if (axios.isAxiosError(err) && err.response?.data?.message) {
+        setRatingError(String(err.response.data.message));
+      } else {
+        setRatingError('Failed to submit rating. Please try again.');
+      }
+    } finally {
+      setRatingSubmitting(false);
+    }
+  };
+
   if (submitted) {
     return (
-      <div className="text-center py-16 space-y-4">
+      <div className="text-center py-16 space-y-5">
         <div className="text-5xl">🎉</div>
         <h2 className="text-2xl font-bold text-gray-900">Thank you!</h2>
         <p className="text-gray-500">Your response has been submitted successfully.</p>
+
+        {!ratingSubmitted && (
+          <div className="max-w-md mx-auto text-left bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-lg p-4 space-y-3">
+            <h3 className="text-base font-semibold text-gray-900 dark:text-gray-100">
+              Rate this survey (optional)
+            </h3>
+            <RatingComponent
+              value={ratingValue}
+              onChange={setRatingValue}
+              showComment
+              comment={ratingComment}
+              onCommentChange={setRatingComment}
+            />
+            {ratingError && (
+              <p className="text-sm text-red-600">{ratingError}</p>
+            )}
+            <div className="flex flex-wrap items-center gap-2 pt-1">
+              <button
+                type="button"
+                onClick={handleRatingSubmit}
+                disabled={ratingSubmitting}
+                className="bg-indigo-600 text-white px-4 py-2 rounded-md text-sm hover:bg-indigo-700 disabled:opacity-50 transition-colors"
+              >
+                {ratingSubmitting ? 'Submitting rating...' : 'Submit rating'}
+              </button>
+              <button
+                type="button"
+                onClick={() => navigate('/')}
+                className="border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-200 px-4 py-2 rounded-md text-sm hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+              >
+                Skip
+              </button>
+            </div>
+          </div>
+        )}
+
+        {ratingSubmitted && (
+          <p className="text-sm text-green-600">Thanks for rating this survey.</p>
+        )}
+
         <button
           onClick={() => navigate('/')}
           className="bg-indigo-600 text-white px-6 py-2 rounded-md hover:bg-indigo-700 transition-colors"

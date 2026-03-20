@@ -63,6 +63,30 @@ docker-compose up -d --build
 
 ## Development setup
 
+### One-command local dev (Windows PowerShell)
+
+From the project root, run:
+
+```powershell
+.\run-local-dev.ps1
+```
+
+This launches:
+- PostgreSQL in Docker (container: `survey-postgres-local`)
+- Backend (Spring Boot, dev profile) in a new PowerShell window
+- Frontend (Vite) in a new PowerShell window
+
+If you already run PostgreSQL locally and do not want Docker for DB:
+
+```powershell
+.\run-local-dev.ps1 -UseLocalPostgres
+```
+
+Default URLs:
+- Frontend: http://localhost:3000
+- Backend: http://localhost:8080
+- Swagger UI: http://localhost:8080/swagger-ui.html
+
 ### Frontend
 
 ```bash

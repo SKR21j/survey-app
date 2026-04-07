@@ -1,10 +1,6 @@
 import api from './api';
 import { Answer, ResponseStats, ResponseSubmission, SurveyResponse } from '../types/Response';
 
-interface PageResponse<T> {
-  content?: T[];
-}
-
 interface BackendAnswer {
   value: string;
 }
@@ -39,9 +35,9 @@ export const responseService = {
   },
 
   async getResponses(surveyId: number): Promise<SurveyResponse[]> {
-    const response = await api.get<PageResponse<BackendResponse>>(`/surveys/${surveyId}/responses`);
-    const content = response.data?.content ?? [];
-    return content.map((item) => mapBackendResponse(surveyId, item));
+    const response = await api.get<BackendResponse[]>(`/surveys/${surveyId}/responses`);
+    const items = Array.isArray(response.data) ? response.data : [];
+    return items.map((item) => mapBackendResponse(surveyId, item));
   },
 
   async getResponseById(id: number): Promise<SurveyResponse> {

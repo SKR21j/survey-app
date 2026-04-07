@@ -2,6 +2,7 @@ package com.surveyapp.service;
 
 import com.surveyapp.dto.ResponseDTO;
 import com.surveyapp.dto.ResponseStatsDTO;
+import com.surveyapp.dto.ResponseViewDTO;
 import com.surveyapp.exception.ResourceNotFoundException;
 import com.surveyapp.model.Answer;
 import com.surveyapp.model.Question;
@@ -13,9 +14,6 @@ import com.surveyapp.repository.SurveyRepository;
 import com.surveyapp.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.Hibernate;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -73,18 +71,21 @@ public class ResponseService {
     }
 
     @Transactional(readOnly = true)
-    public Page<Response> getSurveyResponses(Long surveyId, Pageable pageable) {
+    public List<ResponseViewDTO> getSurveyResponses(Long surveyId) {
         if (!surveyRepository.existsById(surveyId)) {
             throw new ResourceNotFoundException("Survey", surveyId);
         }
-        Page<Response> page = responseRepository.findBySurveyId(surveyId, pageable);
-        page.getContent().forEach(r -> {
-            Hibernate.initialize(r.getAnswers());
+        List<Response> responses = responseRepository.findBySurveyIdWithAnswers(surveyId);
+        return responses.stream().map(r -> {
+            ResponseViewDTO.UserDTO userDTO = null;
             if (r.getUser() != null) {
-                Hibernate.initialize(r.getUser());
+                userDTO = new ResponseViewDTO.UserDTO(r.getUser().getId(), r.getUser().getUsername());
             }
-        });
-        return page;
+            List<ResponseViewDTO.AnswerDTO> answerDTOs = r.getAnswers().stream()
+                    .map(a -> new ResponseViewDTO.AnswerDTO(a.getValue()))
+                    .collect(Collectors.toList());
+            return new ResponseViewDTO(r.getId(), r.getSubmittedAt(), userDTO, answerDTOs);
+        }).collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)

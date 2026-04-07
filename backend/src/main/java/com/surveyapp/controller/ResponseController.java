@@ -2,6 +2,7 @@ package com.surveyapp.controller;
 
 import com.surveyapp.dto.ResponseDTO;
 import com.surveyapp.dto.ResponseStatsDTO;
+import com.surveyapp.dto.ResponseViewDTO;
 import com.surveyapp.model.Response;
 import com.surveyapp.service.ResponseService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -36,8 +37,8 @@ public class ResponseController {
     @GetMapping("/surveys/{id}/responses")
     @PreAuthorize("isAuthenticated()")
     @Operation(summary = "Get all responses for a survey", security = @SecurityRequirement(name = "bearerAuth"))
-    public ResponseEntity<Page<Response>> getSurveyResponses(@PathVariable Long id, Pageable pageable) {
-        return ResponseEntity.ok(responseService.getSurveyResponses(id, pageable));
+    public ResponseEntity<List<ResponseViewDTO>> getSurveyResponses(@PathVariable Long id) {
+        return ResponseEntity.ok(responseService.getSurveyResponses(id));
     }
 
     @GetMapping("/responses/survey/{surveyId}/stats")

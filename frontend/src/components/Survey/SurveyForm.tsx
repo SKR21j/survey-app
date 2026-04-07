@@ -96,40 +96,40 @@ export default function SurveyForm() {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="max-w-2xl mx-auto space-y-6">
-      <h1 className="text-2xl font-bold text-gray-900">{isEdit ? t('editSurvey') : t('createSurveyPlain')}</h1>
+      <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">{isEdit ? t('editSurvey') : t('createSurveyPlain')}</h1>
 
       {serverError && (
-        <div className="p-3 bg-red-50 border border-red-200 text-red-700 rounded-md text-sm">
+        <div className="p-3 bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-700 text-red-700 dark:text-red-300 rounded-md text-sm">
           {serverError}
         </div>
       )}
 
-      <div className="bg-white rounded-lg border border-gray-200 p-5 space-y-4">
+      <div className="bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700 p-5 space-y-4">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">{t('title')} *</label>
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t('title')} *</label>
           <input
             {...register('title', { required: t('titleRequired') })}
-            className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            className="w-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
             placeholder={t('surveyTitlePlaceholder')}
           />
-          {errors.title && <p className="mt-1 text-xs text-red-600">{errors.title.message}</p>}
+          {errors.title && <p className="mt-1 text-xs text-red-600 dark:text-red-400">{errors.title.message}</p>}
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">{t('description')}</label>
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t('description')}</label>
           <textarea
             {...register('description')}
             rows={3}
-            className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            className="w-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
             placeholder={t('describeSurvey')}
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">{t('status')}</label>
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t('status')}</label>
           <select
             {...register('status')}
-            className="border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            className="border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
           >
             {STATUSES.map((s) => (
               <option key={s} value={s}>{getStatusLabel(s)}</option>
@@ -140,11 +140,11 @@ export default function SurveyForm() {
 
       <div className="space-y-4">
         <div className="flex items-center justify-between">
-          <h2 className="text-lg font-semibold text-gray-800">{t('questions')}</h2>
+          <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-100">{t('questions')}</h2>
           <button
             type="button"
             onClick={() => appendQuestion({ text: '', type: 'TEXT', required: false, options: [] })}
-            className="bg-indigo-50 text-indigo-700 px-3 py-1.5 rounded-md text-sm hover:bg-indigo-100 transition-colors"
+            className="bg-indigo-50 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 px-3 py-1.5 rounded-md text-sm hover:bg-indigo-100 dark:hover:bg-indigo-900/50 transition-colors"
           >
             {t('addQuestion')}
           </button>
@@ -162,7 +162,7 @@ export default function SurveyForm() {
         ))}
 
         {questionFields.length === 0 && (
-          <p className="text-sm text-gray-400 text-center py-6 border-2 border-dashed border-gray-200 rounded-lg">
+          <p className="text-sm text-gray-400 dark:text-gray-500 text-center py-6 border-2 border-dashed border-gray-200 dark:border-gray-700 rounded-lg">
             {t('noQuestionsYetLong')}
           </p>
         )}
@@ -179,7 +179,7 @@ export default function SurveyForm() {
         <button
           type="button"
           onClick={() => navigate(-1)}
-          className="border border-gray-300 text-gray-700 px-6 py-2 rounded-md hover:bg-gray-50 transition-colors"
+          className="border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 px-6 py-2 rounded-md hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
         >
           {t('cancel')}
         </button>
@@ -226,18 +226,18 @@ function QuestionEditor({ index, register, control, watch, onRemove }: QuestionE
   }, [qType]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
-    <div className="bg-white rounded-lg border border-gray-200 p-4 space-y-3">
+    <div className="bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700 p-4 space-y-3">
       <div className="flex items-center gap-2">
-        <span className="text-sm font-medium text-gray-500">Q{index + 1}</span>
+        <span className="text-sm font-medium text-gray-500 dark:text-gray-400">Q{index + 1}</span>
         <input
           {...register(`questions.${index}.text`, { required: true })}
-          className="flex-1 border border-gray-300 rounded-md px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          className="flex-1 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-md px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
           placeholder={t('questionText')}
         />
         <button
           type="button"
           onClick={onRemove}
-          className="text-red-500 hover:text-red-700 text-xs px-2 py-1 rounded hover:bg-red-50"
+          className="text-red-500 hover:text-red-700 text-xs px-2 py-1 rounded hover:bg-red-50 dark:hover:bg-red-900/30"
         >
           {t('remove')}
         </button>
@@ -246,26 +246,26 @@ function QuestionEditor({ index, register, control, watch, onRemove }: QuestionE
       <div className="flex items-center gap-4">
         <select
           {...register(`questions.${index}.type`)}
-          className="border border-gray-300 rounded-md px-2 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          className="border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-md px-2 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
         >
           {QUESTION_TYPES.map((t) => (
             <option key={t} value={t}>{t}</option>
           ))}
         </select>
-        <label className="flex items-center gap-1.5 text-sm text-gray-600">
+        <label className="flex items-center gap-1.5 text-sm text-gray-600 dark:text-gray-400">
           <input type="checkbox" {...register(`questions.${index}.required`)} className="rounded" />
           {t('required')}
         </label>
       </div>
 
       {hasOptions && (
-        <div className="space-y-2 pl-4 border-l-2 border-indigo-100">
-          <p className="text-xs text-gray-500 font-medium">{t('options')}</p>
+        <div className="space-y-2 pl-4 border-l-2 border-indigo-200 dark:border-indigo-700">
+          <p className="text-xs text-gray-500 dark:text-gray-400 font-medium">{t('options')}</p>
           {optionFields.map((opt, oi) => (
             <div key={opt.id} className="flex items-center gap-2">
               <input
                 {...register(`questions.${index}.options.${oi}.text`, { required: true })}
-                className="flex-1 border border-gray-300 rounded-md px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                className="flex-1 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-md px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500"
                 placeholder={`Option ${oi + 1}`}
               />
               <button
@@ -288,16 +288,16 @@ function QuestionEditor({ index, register, control, watch, onRemove }: QuestionE
       )}
 
       {qType === 'SLIDER' && optionFields.length === 3 && (
-        <div className="space-y-2 pl-4 border-l-2 border-indigo-100">
-          <p className="text-xs text-gray-500 font-medium">Slider Range</p>
+        <div className="space-y-2 pl-4 border-l-2 border-indigo-200 dark:border-indigo-700">
+          <p className="text-xs text-gray-500 dark:text-gray-400 font-medium">Slider Range</p>
           <div className="flex gap-4">
             {(['Min', 'Max', 'Step'] as const).map((label, i) => (
               <div key={label} className="flex flex-col gap-1">
-                <label className="text-xs text-gray-500">{label}</label>
+                <label className="text-xs text-gray-500 dark:text-gray-400">{label}</label>
                 <input
                   type="number"
                   {...register(`questions.${index}.options.${i}.text`)}
-                  className="border border-gray-300 rounded-md px-2 py-1 text-sm w-20 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                  className="border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-md px-2 py-1 text-sm w-20 focus:outline-none focus:ring-1 focus:ring-indigo-500"
                 />
               </div>
             ))}

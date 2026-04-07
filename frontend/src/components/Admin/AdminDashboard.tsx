@@ -37,10 +37,10 @@ export default function AdminDashboard() {
   };
 
   const statCards = [
-    { label: t('totalSurveys'), value: stats.total, color: 'bg-indigo-50 text-indigo-700' },
-    { label: t('active'), value: stats.active, color: 'bg-green-50 text-green-700' },
-    { label: t('draft'), value: stats.draft, color: 'bg-gray-50 text-gray-700' },
-    { label: t('totalResponses'), value: stats.totalResponses, color: 'bg-blue-50 text-blue-700' },
+    { label: t('totalSurveys'), value: stats.total, color: 'bg-indigo-50 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300' },
+    { label: t('active'), value: stats.active, color: 'bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-300' },
+    { label: t('draft'), value: stats.draft, color: 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300' },
+    { label: t('totalResponses'), value: stats.totalResponses, color: 'bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300' },
   ];
 
   const getStatusLabel = (status: Survey['status']) => {
@@ -52,7 +52,7 @@ export default function AdminDashboard() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-gray-900">{t('dashboard')}</h1>
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">{t('dashboard')}</h1>
         <Link
           to="/surveys/create"
           className="bg-indigo-600 text-white px-4 py-2 rounded-md text-sm hover:bg-indigo-700 transition-colors"
@@ -70,16 +70,16 @@ export default function AdminDashboard() {
         ))}
       </div>
 
-      <div className="bg-white rounded-lg border border-gray-200">
-        <div className="px-5 py-4 border-b border-gray-200">
-          <h2 className="font-semibold text-gray-800">{t('recentSurveys')}</h2>
+      <div className="bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700">
+        <div className="px-5 py-4 border-b border-gray-200 dark:border-gray-700">
+          <h2 className="font-semibold text-gray-800 dark:text-gray-100">{t('recentSurveys')}</h2>
         </div>
-        <div className="divide-y divide-gray-100">
+        <div className="divide-y divide-gray-100 dark:divide-gray-700">
           {surveys.slice(0, 10).map((survey) => (
             <div key={survey.id} className="flex items-center justify-between px-5 py-3">
               <div>
-                <p className="text-sm font-medium text-gray-900">{survey.title}</p>
-                <p className="text-xs text-gray-400">
+                <p className="text-sm font-medium text-gray-900 dark:text-gray-100">{survey.title}</p>
+                <p className="text-xs text-gray-400 dark:text-gray-500">
                   {survey.questions.length} {t('questions')} · {survey.responseCount ?? 0} {t('responses')}
                 </p>
               </div>
@@ -87,10 +87,10 @@ export default function AdminDashboard() {
                 <span
                   className={`text-xs px-2 py-0.5 rounded-full ${
                     survey.status === 'ACTIVE'
-                      ? 'bg-green-100 text-green-700'
+                      ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300'
                       : survey.status === 'DRAFT'
-                      ? 'bg-gray-100 text-gray-700'
-                      : 'bg-red-100 text-red-700'
+                      ? 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'
+                      : 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300'
                   }`}
                 >
                   {getStatusLabel(survey.status)}

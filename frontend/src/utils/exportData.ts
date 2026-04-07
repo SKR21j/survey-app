@@ -13,7 +13,7 @@ export function exportToCSV(survey: Survey, responses: SurveyResponse[]): void {
       String(response.id),
       response.username ?? 'Anonymous',
       response.submittedAt,
-      ...survey.questions.map((q, index) => answerMap[q.id] ?? (response.answers[index] ? (Array.isArray(response.answers[index].value) ? response.answers[index].value.join('; ') : String(response.answers[index].value)) : '')),
+      ...survey.questions.map((q) => answerMap[q.id] ?? ''),
     ];
   });
 
@@ -35,13 +35,10 @@ export function exportToJSON(survey: Survey, responses: SurveyResponse[]): void 
       id: r.id,
       username: r.username ?? 'Anonymous',
       submittedAt: r.submittedAt,
-      answers: r.answers.map((a, index) => {
-        const question = survey.questions.find((q) => q.id === a.questionId) ?? survey.questions[index];
-        return {
-          question: question?.text ?? String(a.questionId),
+      answers: r.answers.map((a) => ({
+          question: a.questionText ?? String(a.questionId),
           answer: a.value,
-        };
-      }),
+        })),
     })),
   };
 

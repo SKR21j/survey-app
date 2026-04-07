@@ -1,5 +1,6 @@
 export interface Answer {
   questionId: number;
+  questionText?: string;
   value: string | string[];
 }
 

@@ -2,6 +2,8 @@ import api from './api';
 import { Answer, ResponseStats, ResponseSubmission, SurveyResponse } from '../types/Response';
 
 interface BackendAnswer {
+  questionId: number;
+  questionText?: string;
   value: string;
 }
 
@@ -22,8 +24,9 @@ function mapBackendResponse(surveyId: number, item: BackendResponse): SurveyResp
     userId: item.user?.id ?? 0,
     username: item.user?.username,
     submittedAt: item.submittedAt,
-    answers: (item.answers ?? []).map((a, index) => ({
-      questionId: index,
+    answers: (item.answers ?? []).map((a) => ({
+      questionId: a.questionId,
+      questionText: a.questionText,
       value: a.value,
     })),
   };

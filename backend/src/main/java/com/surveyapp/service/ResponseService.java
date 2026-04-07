@@ -20,7 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.stream.Collectors;
-
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -82,7 +81,11 @@ public class ResponseService {
                 userDTO = new ResponseViewDTO.UserDTO(r.getUser().getId(), r.getUser().getUsername());
             }
             List<ResponseViewDTO.AnswerDTO> answerDTOs = r.getAnswers().stream()
-                    .map(a -> new ResponseViewDTO.AnswerDTO(a.getValue()))
+                    .sorted(Comparator.comparingInt(a -> a.getQuestion().getDisplayOrder()))
+                    .map(a -> new ResponseViewDTO.AnswerDTO(
+                            a.getQuestion().getId(),
+                            a.getQuestion().getText(),
+                            a.getValue()))
                     .collect(Collectors.toList());
             return new ResponseViewDTO(r.getId(), r.getSubmittedAt(), userDTO, answerDTOs);
         }).collect(Collectors.toList());

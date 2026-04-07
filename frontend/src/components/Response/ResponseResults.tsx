@@ -50,69 +50,91 @@ export default function ResponseResults({ surveyId }: ResponseResultsProps) {
     return <p className="text-red-500 text-sm">{error}</p>;
   }
 
-  if (stats.length > 0) {
-    return (
-      <div className="space-y-6">
-        {stats.map((stat) => (
-          <div key={stat.questionId} className="bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-800 p-5">
-            <h3 className="font-semibold text-gray-800 dark:text-gray-100 mb-3">{stat.questionText}</h3>
-            <p className="text-xs text-gray-400 dark:text-gray-500 mb-3">
-              {stat.totalResponses} response{stat.totalResponses !== 1 ? 's' : ''}
-            </p>
-            <div className="space-y-2">
-              {stat.answers.map((a) => {
-                const pct =
-                  stat.totalResponses > 0
-                    ? Math.round((a.count / stat.totalResponses) * 100)
-                    : 0;
-                return (
-                  <div key={a.value}>
-                    <div className="flex justify-between text-sm text-gray-700 dark:text-gray-200 mb-1">
-                      <span>{a.value}</span>
-                      <span>{a.count} ({pct}%)</span>
-                    </div>
-                    <div className="w-full bg-gray-100 dark:bg-gray-800 rounded-full h-2">
-                      <div
-                        className="bg-indigo-500 h-2 rounded-full transition-all"
-                        style={{ width: `${pct}%` }}
-                      />
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        ))}
-      </div>
-    );
+  if (responses.length === 0 && stats.every((s) => s.totalResponses === 0)) {
+    return <p className="text-gray-400 dark:text-gray-500 text-sm">No responses yet.</p>;
   }
 
-  if (responses.length > 0) {
-    return (
-      <div className="space-y-3">
-        <p className="text-sm text-gray-500 dark:text-gray-400">{responses.length} response(s) submitted.</p>
-        {responses.map((response) => (
-          <div key={response.id} className="bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-800 p-4">
-            <div className="flex items-center justify-between mb-2">
-              <p className="text-xs text-gray-500 dark:text-gray-400">
-                Submitted: {new Date(response.submittedAt).toLocaleString()}
+  return (
+    <div className="space-y-8">
+      {/* Aggregate stats per question */}
+      {stats.length > 0 && (
+        <div className="space-y-4">
+          <h2 className="text-base font-semibold text-gray-800 dark:text-gray-100">Answer Summary</h2>
+          {stats.map((stat) => (
+            <div key={stat.questionId} className="bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-800 p-5">
+              <h3 className="font-semibold text-gray-800 dark:text-gray-100 mb-1">{stat.questionText}</h3>
+              <p className="text-xs text-gray-400 dark:text-gray-500 mb-3">
+                {stat.totalResponses} response{stat.totalResponses !== 1 ? 's' : ''}
               </p>
-              {response.username && (
-                <span className="text-xs font-medium text-indigo-600 dark:text-indigo-400">
-                  {response.username}
-                </span>
+              {stat.answers.length > 0 ? (
+                <div className="space-y-2">
+                  {stat.answers.map((a) => {
+                    const pct =
+                      stat.totalResponses > 0
+                        ? Math.round((a.count / stat.totalResponses) * 100)
+                        : 0;
+                    return (
+                      <div key={a.value}>
+                        <div className="flex justify-between text-sm text-gray-700 dark:text-gray-200 mb-1">
+                          <span>{a.value}</span>
+                          <span>{a.count} ({pct}%)</span>
+                        </div>
+                        <div className="w-full bg-gray-100 dark:bg-gray-800 rounded-full h-2">
+                          <div
+                            className="bg-indigo-500 h-2 rounded-full transition-all"
+                            style={{ width: `${pct}%` }}
+                          />
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              ) : (
+                <p className="text-xs text-gray-400 dark:text-gray-500">No answers yet.</p>
               )}
             </div>
-            <ul className="list-disc list-inside text-sm text-gray-700 dark:text-gray-200 space-y-1">
-              {response.answers.map((answer, index) => (
-                <li key={`${response.id}-${index}`}>{Array.isArray(answer.value) ? answer.value.join(', ') : answer.value}</li>
-              ))}
-            </ul>
-          </div>
-        ))}
-      </div>
-    );
-  }
+          ))}
+        </div>
+      )}
 
-  return <p className="text-gray-400 dark:text-gray-500 text-sm">No responses yet.</p>;
+      {/* Individual responses */}
+      {responses.length > 0 && (
+        <div className="space-y-3">
+          <h2 className="text-base font-semibold text-gray-800 dark:text-gray-100">
+            Individual Responses ({responses.length})
+          </h2>
+          {responses.map((response) => (
+            <div key={response.id} className="bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-800 p-4">
+              <div className="flex items-center justify-between mb-3">
+                <p className="text-xs text-gray-500 dark:text-gray-400">
+                  Submitted: {new Date(response.submittedAt).toLocaleString()}
+                </p>
+                {response.username && (
+                  <span className="text-xs font-medium text-indigo-600 dark:text-indigo-400">
+                    {response.username}
+                  </span>
+                )}
+              </div>
+              {response.answers.length > 0 ? (
+                <dl className="space-y-2">
+                  {response.answers.map((answer) => (
+                    <div key={answer.questionId} className="text-sm">
+                      {answer.questionText && (
+                        <dt className="text-xs text-gray-500 dark:text-gray-400 mb-0.5">{answer.questionText}</dt>
+                      )}
+                      <dd className="text-gray-800 dark:text-gray-200 font-medium">
+                        {Array.isArray(answer.value) ? answer.value.join(', ') : answer.value}
+                      </dd>
+                    </div>
+                  ))}
+                </dl>
+              ) : (
+                <p className="text-xs text-gray-400 dark:text-gray-500">No answers recorded.</p>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
 }

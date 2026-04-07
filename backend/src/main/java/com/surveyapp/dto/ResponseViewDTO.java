@@ -29,6 +29,8 @@ public class ResponseViewDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class AnswerDTO {
+        private Long questionId;
+        private String questionText;
         private String value;
     }
 }

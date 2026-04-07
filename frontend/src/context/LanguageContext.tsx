@@ -103,6 +103,7 @@ const translations: Record<string, Record<Language, string>> = {
   selectStarRating: { en: 'Please select a star rating from 1 to 5, or skip this step.', bg: 'Моля, изберете оценка от 1 до 5 звезди или пропуснете тази стъпка.' },
   failedSubmitRating: { en: 'Failed to submit rating. Please try again.', bg: 'Неуспешно изпращане на оценка. Опитайте отново.' },
   answerPrompt: { en: 'Please answer: "{question}"', bg: 'Моля, отговорете на: "{question}"' },
+  surveyNotFound: { en: 'Survey not found.', bg: 'Анкетата не е намерена.' },
   invalidSurveyId: { en: 'Invalid survey id.', bg: 'Невалиден идентификатор на анкета.' },
   loadingResponses: { en: 'Loading responses...', bg: 'Зареждане на отговорите...' },
   onlyViewCreatedResponses: { en: 'You can only view responses for surveys you created.', bg: 'Можете да виждате отговорите само за анкети, които сте създали.' },

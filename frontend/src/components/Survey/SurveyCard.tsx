@@ -46,9 +46,9 @@ export default function SurveyCard({ survey, onDeleted }: SurveyCardProps) {
       <p className="text-sm text-gray-500 dark:text-gray-400 line-clamp-2">{survey.description}</p>
 
       <div className="flex items-center gap-4 text-xs text-gray-400 dark:text-gray-500">
-        <span>📝 {survey.questions?.length ?? 0} questions</span>
+        <span>📝 {survey.questions?.length ?? 0} {t('questions')}</span>
         {survey.responseCount !== undefined && (
-          <span>📊 {survey.responseCount} responses</span>
+          <span>📊 {survey.responseCount} {t('responses')}</span>
         )}
         {survey.averageRating !== undefined && (
           <span>⭐ {survey.averageRating.toFixed(1)}</span>

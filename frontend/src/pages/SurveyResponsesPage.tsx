@@ -26,12 +26,15 @@ export default function SurveyResponsesPage() {
       return;
     }
 
-    Promise.all([surveyService.getSurvey(Number(id)), responseService.getResponses(Number(id))])
-      .then(([loadedSurvey, loadedResponses]) => {
+    const surveyId = Number(id);
+    surveyService.getSurvey(surveyId)
+      .then((loadedSurvey) => {
         setSurvey(loadedSurvey);
-        setResponses(loadedResponses);
+        return responseService.getResponses(surveyId)
+          .then(setResponses)
+          .catch(() => { /* responses failure is shown inside ResponseResults */ });
       })
-      .catch(() => setError(t('noSurveysFound')))
+      .catch(() => setError(t('surveyNotFound')))
       .finally(() => setLoading(false));
   }, [id, t]);
 
@@ -45,7 +48,7 @@ export default function SurveyResponsesPage() {
   }
 
   if (error || !survey) {
-    return <div className="max-w-4xl mx-auto px-4 py-10 text-red-500">{error || t('noSurveysFound')}</div>;
+    return <div className="max-w-4xl mx-auto px-4 py-10 text-red-500">{error || t('surveyNotFound')}</div>;
   }
 
   const canViewResponses = isAdmin || user?.id === survey.createdBy?.id;

@@ -4,6 +4,7 @@
 
   const translations = {
     en: {
+      brand: 'Survey App',
       'contacts.title': 'Let us hear from you',
       'contacts.subtitle': 'Questions, feedback, and partnership ideas are all welcome.',
       'contacts.backToApp': 'Back to app',
@@ -31,6 +32,7 @@
       languageAria: 'Switch language to Bulgarian'
     },
     bg: {
+      brand: 'Survey App',
       'contacts.title': 'Свържете се с нас',
       'contacts.subtitle': 'Въпроси, обратна връзка и идеи за партньорство са добре дошли.',
       'contacts.backToApp': 'Обратно към приложението',

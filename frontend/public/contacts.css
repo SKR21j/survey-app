@@ -39,6 +39,11 @@ body {
   overflow-x: hidden;
 }
 
+:root.dark body {
+  background:
+    linear-gradient(135deg, var(--bg-1), var(--bg-2));
+}
+
 .grain {
   position: fixed;
   inset: 0;
@@ -61,6 +66,10 @@ body {
   font-size: 0.76rem;
   color: #38506b;
   font-weight: 700;
+}
+
+:root.dark .eyebrow {
+  color: var(--muted);
 }
 
 h1 {
@@ -138,6 +147,10 @@ h1 {
   padding: 24px;
 }
 
+:root.dark .card {
+  border: 1px solid var(--line);
+}
+
 h2 {
   margin: 0;
   font-size: 1.35rem;
@@ -212,6 +225,10 @@ h3 {
   color: #3f5f81;
 }
 
+:root.dark h3 {
+  color: var(--muted);
+}
+
 form {
   display: grid;
   gap: 12px;
@@ -234,6 +251,12 @@ textarea {
   font: inherit;
   color: var(--ink);
   background: #ffffffd8;
+}
+
+:root.dark input,
+:root.dark textarea {
+  background: #1e2f45;
+  color: var(--ink);
 }
 
 input:focus,

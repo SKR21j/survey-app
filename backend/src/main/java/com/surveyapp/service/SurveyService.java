@@ -4,6 +4,7 @@ import com.surveyapp.dto.SurveyDTO;
 import com.surveyapp.exception.ApiException;
 import com.surveyapp.exception.ResourceNotFoundException;
 import com.surveyapp.model.Question;
+import com.surveyapp.model.Response;
 import com.surveyapp.model.Survey;
 import com.surveyapp.model.User;
 import com.surveyapp.repository.RatingRepository;

@@ -133,6 +133,11 @@ public class SurveyService {
     @Transactional
     public void deleteSurvey(Long id) {
         Survey survey = getSurveyById(id);
+        List<Response> responses = responseRepository.findAllBySurveyId(id);
+        if (!responses.isEmpty()) {
+            responseRepository.deleteAll(responses);
+        }
+        ratingRepository.deleteAllBySurveyId(id);
         surveyRepository.delete(survey);
         log.info("Survey deleted: {}", id);
     }

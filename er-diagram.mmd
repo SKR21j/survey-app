@@ -1,0 +1,65 @@
+erDiagram
+    USERS {
+      UUID id PK
+      VARCHAR username
+      VARCHAR email
+      VARCHAR password
+      VARCHAR role
+      TIMESTAMP created_at
+      TIMESTAMP updated_at
+    }
+    SURVEYS {
+      UUID id PK
+      VARCHAR title
+      TEXT description
+      UUID creator_id FK
+      VARCHAR status
+      TIMESTAMP created_at
+      TIMESTAMP updated_at
+    }
+    QUESTIONS {
+      UUID id PK
+      UUID survey_id FK
+      TEXT question_text
+      VARCHAR question_type
+      BOOLEAN required
+      INT question_order
+      TIMESTAMP created_at
+    }
+    QUESTION_OPTIONS {
+      UUID id PK
+      UUID question_id FK
+      VARCHAR option_text
+      INT option_order
+    }
+    RESPONSES {
+      UUID id PK
+      UUID survey_id FK
+      UUID user_id FK
+      TIMESTAMP submitted_at
+    }
+    ANSWERS {
+      UUID id PK
+      UUID response_id FK
+      UUID question_id FK
+      TEXT answer_text
+      INT rating_value
+      TIMESTAMP created_at
+    }
+    RATINGS {
+      UUID id PK
+      UUID survey_id FK
+      UUID user_id FK
+      INT rating
+      TIMESTAMP created_at
+    }
+
+    USERS ||--o{ SURVEYS : creates
+    SURVEYS ||--o{ QUESTIONS : contains
+    QUESTIONS ||--o{ QUESTION_OPTIONS : has
+    SURVEYS ||--o{ RESPONSES : receives
+    USERS ||--o{ RESPONSES : submits
+    RESPONSES ||--o{ ANSWERS : includes
+    QUESTIONS ||--o{ ANSWERS : answers
+    SURVEYS ||--o{ RATINGS : receives
+    USERS ||--o{ RATINGS : gives

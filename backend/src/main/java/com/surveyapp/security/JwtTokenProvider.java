@@ -3,6 +3,7 @@ package com.surveyapp.security;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import io.jsonwebtoken.security.SecurityException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
@@ -59,6 +60,8 @@ public class JwtTokenProvider {
             return true;
         } catch (MalformedJwtException e) {
             log.error("Invalid JWT token: {}", e.getMessage());
+        } catch (SecurityException e) {
+            log.error("JWT signature validation failed: {}", e.getMessage());
         } catch (ExpiredJwtException e) {
             log.error("JWT token expired: {}", e.getMessage());
         } catch (UnsupportedJwtException e) {

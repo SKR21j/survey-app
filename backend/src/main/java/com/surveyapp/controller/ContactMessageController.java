@@ -1,6 +1,7 @@
 package com.surveyapp.controller;
 
 import com.surveyapp.dto.ContactMessageDTO;
+import com.surveyapp.dto.ContactMessageResponseDTO;
 import com.surveyapp.model.ContactMessage;
 import com.surveyapp.service.ContactMessageService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -9,11 +10,14 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/contact")
@@ -25,17 +29,18 @@ public class ContactMessageController {
 
     @PostMapping("/messages")
     @Operation(summary = "Submit a contact message")
-    public ResponseEntity<ContactMessage> submitMessage(@Valid @RequestBody ContactMessageDTO dto) {
+    public ResponseEntity<ContactMessageResponseDTO> submitMessage(@Valid @RequestBody ContactMessageDTO dto) {
         ContactMessage message = contactMessageService.saveMessage(dto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(message);
+        return ResponseEntity.status(HttpStatus.CREATED).body(ContactMessageResponseDTO.from(message));
     }
 
     @GetMapping("/messages")
     @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Get all contact messages (Admin only)", security = @SecurityRequirement(name = "bearerAuth"))
-    public ResponseEntity<Page<ContactMessage>> getAllMessages(Pageable pageable) {
+    public ResponseEntity<Page<ContactMessageResponseDTO>> getAllMessages(Pageable pageable) {
         Page<ContactMessage> messages = contactMessageService.getAllMessages(pageable);
-        return ResponseEntity.ok(messages);
+        Page<ContactMessageResponseDTO> responseDTOs = messages.map(ContactMessageResponseDTO::from);
+        return ResponseEntity.ok(responseDTOs);
     }
 
     @PutMapping("/messages/{id}/read")

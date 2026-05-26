@@ -163,22 +163,29 @@
   async function fetchMessages() {
     const token = getToken();
     if (!token) {
-      console.error('No token found');
+      console.error('No token found for fetching messages');
       return { content: [], totalElements: 0 };
     }
 
     try {
+      console.log('Fetching messages from:', API_BASE_URL + '/contact/messages');
       const response = await fetch(API_BASE_URL + '/contact/messages?page=0&size=50', {
         headers: {
-          'Authorization': 'Bearer ' + token
+          'Authorization': 'Bearer ' + token,
+          'Content-Type': 'application/json'
         }
       });
 
       if (!response.ok) {
-        throw new Error('Failed to fetch messages');
+        console.error('Failed to fetch messages. Status:', response.status);
+        const errorText = await response.text();
+        console.error('Error response:', errorText);
+        throw new Error('Failed to fetch messages: ' + response.status);
       }
 
-      return await response.json();
+      const data = await response.json();
+      console.log('Messages fetched successfully:', data);
+      return data;
     } catch (error) {
       console.error('Error fetching messages:', error);
       return { content: [], totalElements: 0 };
@@ -199,6 +206,7 @@
     };
 
     try {
+      console.log('Submitting message to:', API_BASE_URL + '/contact/messages');
       const response = await fetch(API_BASE_URL + '/contact/messages', {
         method: 'POST',
         headers: {
@@ -207,12 +215,15 @@
         body: JSON.stringify(data)
       });
 
+      const responseData = await response.json();
+      
       if (!response.ok) {
-        const error = await response.json();
-        alert('Error: ' + (error.message || 'Failed to submit message'));
+        console.error('Submit failed. Status:', response.status, 'Error:', responseData);
+        alert('Error: ' + (responseData.message || 'Failed to submit message'));
         return;
       }
 
+      console.log('Message submitted successfully:', responseData);
       form.reset();
       alert('Message sent successfully!');
     } catch (error) {
@@ -222,37 +233,45 @@
   }
 
   function renderMessageList() {
+    console.log('Rendering message list...');
     fetchMessages().then(data => {
       const formWrap = document.querySelector('.form-wrap');
-      if (!formWrap) return;
+      if (!formWrap) {
+        console.error('Form wrap element not found');
+        return;
+      }
 
       const language = getInitialLanguage();
       const messages = data.content || [];
 
-      let html = '<h2 data-i18n="contacts.sendMessage">Send a message</h2>';
+      console.log('Number of messages:', messages.length);
+
+      let html = '<h2>Messages</h2>';
       
       if (messages.length === 0) {
-        html += '<p style="color: #666;">No messages yet.</p>';
+        html += '<p style="color: #666; padding: 20px; text-align: center;">No messages yet.</p>';
       } else {
         html += '<div style="max-height: 600px; overflow-y: auto;">';
-        messages.forEach((msg, index) => {
+        messages.forEach((msg) => {
+          const dateStr = new Date(msg.createdAt).toLocaleDateString();
+          const timeStr = new Date(msg.createdAt).toLocaleTimeString();
           html += `
-            <div style="border: 1px solid #e5e7eb; padding: 12px; margin-bottom: 12px; border-radius: 6px; background: ${msg.read ? '#f3f4f6' : '#fff'};">
+            <div style="border: 1px solid #e5e7eb; padding: 12px; margin-bottom: 12px; border-radius: 6px; background: ${msg.read ? '#f3f4f6' : '#fff9e6'};">
               <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 8px;">
                 <div>
                   <strong>${escapeHtml(msg.name)}</strong>
                   <br/>
                   <small style="color: #666;">${escapeHtml(msg.email)}</small>
                 </div>
-                <small style="color: #999;">${new Date(msg.createdAt).toLocaleDateString()}</small>
+                <small style="color: #999;">${dateStr} ${timeStr}</small>
               </div>
               <div style="margin-bottom: 8px;">
                 <strong style="color: #1f2937;">${escapeHtml(msg.subject)}</strong>
               </div>
-              <div style="color: #374151; white-space: pre-wrap; word-break: break-word;">
+              <div style="color: #374151; white-space: pre-wrap; word-break: break-word; background: #f9fafb; padding: 8px; border-radius: 4px; margin-bottom: 8px;">
                 ${escapeHtml(msg.message)}
               </div>
-              ${!msg.read ? '<div style="margin-top: 8px; font-size: 12px; color: #dc2626;"><strong>Unread</strong></div>' : ''}
+              ${!msg.read ? '<div style="font-size: 12px; color: #dc2626;"><strong>🔴 Unread</strong></div>' : '<div style="font-size: 12px; color: #16a34a;"><strong>✓ Read</strong></div>'}
             </div>
           `;
         });
@@ -308,12 +327,22 @@
 
   // Handle form submission or show admin view
   document.addEventListener('DOMContentLoaded', function () {
+    console.log('Page loaded. Checking if user is admin...');
+    console.log('Is Admin:', isAdmin());
+    
     if (isAdmin()) {
+      console.log('Admin detected. Showing message list...');
       renderMessageList();
+      
+      // Auto-refresh message list every 5 seconds for admin
+      setInterval(renderMessageList, 5000);
     } else {
+      console.log('Regular user detected. Showing contact form...');
       const form = document.querySelector('.form-wrap form');
       if (form) {
         form.addEventListener('submit', submitContactForm);
+      } else {
+        console.error('Form not found');
       }
     }
   });

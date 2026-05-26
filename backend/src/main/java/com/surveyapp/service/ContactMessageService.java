@@ -19,6 +19,8 @@ public class ContactMessageService {
 
     @Transactional
     public ContactMessage saveMessage(ContactMessageDTO dto) {
+        log.info("Saving contact message from: {} ({})", dto.getName(), dto.getEmail());
+        
         ContactMessage message = new ContactMessage();
         message.setName(dto.getName());
         message.setEmail(dto.getEmail());
@@ -26,21 +28,28 @@ public class ContactMessageService {
         message.setMessage(dto.getMessage());
         
         ContactMessage saved = contactMessageRepository.save(message);
-        log.info("Contact message saved: {}", saved.getId());
+        log.info("Contact message saved with ID: {}", saved.getId());
         return saved;
     }
 
     @Transactional(readOnly = true)
     public Page<ContactMessage> getAllMessages(Pageable pageable) {
-        return contactMessageRepository.findAllByOrderByCreatedAtDesc(pageable);
+        log.info("Fetching all messages with pagination: page={}, size={}", pageable.getPageNumber(), pageable.getPageSize());
+        Page<ContactMessage> messages = contactMessageRepository.findAllByOrderByCreatedAtDesc(pageable);
+        log.info("Found {} messages", messages.getTotalElements());
+        return messages;
     }
 
     @Transactional
     public void markAsRead(Long messageId) {
-        contactMessageRepository.findById(messageId).ifPresent(message -> {
-            message.setRead(true);
-            contactMessageRepository.save(message);
-            log.info("Message marked as read: {}", messageId);
-        });
+        log.info("Marking message as read: {}", messageId);
+        contactMessageRepository.findById(messageId).ifPresentOrElse(
+            message -> {
+                message.setRead(true);
+                contactMessageRepository.save(message);
+                log.info("Message marked as read successfully: {}", messageId);
+            },
+            () -> log.warn("Message not found: {}", messageId)
+        );
     }
 }

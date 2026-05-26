@@ -69,6 +69,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/surveys", "/api/surveys/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/surveys/**/average-rating").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/responses").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/contact/messages").permitAll()
                         .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
                         .requestMatchers("/actuator/health", "/actuator/health/**").permitAll()
                         .anyRequest().authenticated()

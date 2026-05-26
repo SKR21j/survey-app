@@ -1,6 +1,9 @@
 (function () {
   const THEME_STORAGE_KEY = 'theme';
   const LANGUAGE_STORAGE_KEY = 'language';
+  const AUTH_STORAGE_KEY = 'user';
+  const TOKEN_STORAGE_KEY = 'token';
+  const API_BASE_URL = 'http://localhost:8081/api';
 
   const translations = {
     en: {
@@ -139,6 +142,139 @@
     applyLanguage(language);
   }
 
+  function getStoredUser() {
+    try {
+      const user = localStorage.getItem(AUTH_STORAGE_KEY);
+      return user ? JSON.parse(user) : null;
+    } catch {
+      return null;
+    }
+  }
+
+  function getToken() {
+    return localStorage.getItem(TOKEN_STORAGE_KEY);
+  }
+
+  function isAdmin() {
+    const user = getStoredUser();
+    return user && user.role === 'ADMIN';
+  }
+
+  async function fetchMessages() {
+    const token = getToken();
+    if (!token) {
+      console.error('No token found');
+      return { content: [], totalElements: 0 };
+    }
+
+    try {
+      const response = await fetch(API_BASE_URL + '/contact/messages?page=0&size=50', {
+        headers: {
+          'Authorization': 'Bearer ' + token
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch messages');
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error('Error fetching messages:', error);
+      return { content: [], totalElements: 0 };
+    }
+  }
+
+  async function submitContactForm(event) {
+    event.preventDefault();
+
+    const form = event.target;
+    const formData = new FormData(form);
+
+    const data = {
+      name: formData.get('name'),
+      email: formData.get('email'),
+      subject: formData.get('subject'),
+      message: formData.get('message')
+    };
+
+    try {
+      const response = await fetch(API_BASE_URL + '/contact/messages', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        alert('Error: ' + (error.message || 'Failed to submit message'));
+        return;
+      }
+
+      form.reset();
+      alert('Message sent successfully!');
+    } catch (error) {
+      console.error('Error submitting form:', error);
+      alert('Error sending message. Please try again.');
+    }
+  }
+
+  function renderMessageList() {
+    fetchMessages().then(data => {
+      const formWrap = document.querySelector('.form-wrap');
+      if (!formWrap) return;
+
+      const language = getInitialLanguage();
+      const messages = data.content || [];
+
+      let html = '<h2 data-i18n="contacts.sendMessage">Send a message</h2>';
+      
+      if (messages.length === 0) {
+        html += '<p style="color: #666;">No messages yet.</p>';
+      } else {
+        html += '<div style="max-height: 600px; overflow-y: auto;">';
+        messages.forEach((msg, index) => {
+          html += `
+            <div style="border: 1px solid #e5e7eb; padding: 12px; margin-bottom: 12px; border-radius: 6px; background: ${msg.read ? '#f3f4f6' : '#fff'};">
+              <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 8px;">
+                <div>
+                  <strong>${escapeHtml(msg.name)}</strong>
+                  <br/>
+                  <small style="color: #666;">${escapeHtml(msg.email)}</small>
+                </div>
+                <small style="color: #999;">${new Date(msg.createdAt).toLocaleDateString()}</small>
+              </div>
+              <div style="margin-bottom: 8px;">
+                <strong style="color: #1f2937;">${escapeHtml(msg.subject)}</strong>
+              </div>
+              <div style="color: #374151; white-space: pre-wrap; word-break: break-word;">
+                ${escapeHtml(msg.message)}
+              </div>
+              ${!msg.read ? '<div style="margin-top: 8px; font-size: 12px; color: #dc2626;"><strong>Unread</strong></div>' : ''}
+            </div>
+          `;
+        });
+        html += '</div>';
+      }
+
+      formWrap.innerHTML = html;
+      applyLanguage(language);
+    });
+  }
+
+  function escapeHtml(text) {
+    const map = {
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      '"': '&quot;',
+      "'": '&#039;'
+    };
+    return text.replace(/[&<>"']/g, m => map[m]);
+  }
+
   const initialTheme = getInitialTheme();
   const initialLanguage = getInitialLanguage();
   applyLanguage(initialLanguage);
@@ -167,6 +303,18 @@
 
     if (event.key === LANGUAGE_STORAGE_KEY && (event.newValue === 'en' || event.newValue === 'bg')) {
       applyLanguage(event.newValue);
+    }
+  });
+
+  // Handle form submission or show admin view
+  document.addEventListener('DOMContentLoaded', function () {
+    if (isAdmin()) {
+      renderMessageList();
+    } else {
+      const form = document.querySelector('.form-wrap form');
+      if (form) {
+        form.addEventListener('submit', submitContactForm);
+      }
     }
   });
 })();

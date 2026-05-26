@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Survey } from '../../types/Survey';
 import { surveyService } from '../../services/surveyService';
+import { ContactMessage, contactService } from '../../services/contactService';
 import Loading from '../Common/Loading';
 import { useLanguage } from '../../hooks/useLanguage';
 
@@ -16,15 +17,38 @@ interface Stats {
 export default function AdminDashboard() {
   const { t } = useLanguage();
   const [surveys, setSurveys] = useState<Survey[]>([]);
+  const [messages, setMessages] = useState<ContactMessage[]>([]);
+  const [messagesError, setMessagesError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    surveyService
-      .getSurveys()
-      .then(setSurveys)
-      .catch(() => setSurveys([]))
+    Promise.all([
+      surveyService.getSurveys().catch(() => [] as Survey[]),
+      contactService.getMessages(0, 10).catch(() => null),
+    ])
+      .then(([surveyData, messagePage]) => {
+        setSurveys(surveyData);
+        if (messagePage) {
+          setMessages(messagePage.content ?? []);
+        } else {
+          setMessagesError('Could not load contact messages.');
+        }
+      })
       .finally(() => setLoading(false));
   }, []);
+
+  const handleMarkAsRead = async (messageId: number) => {
+    try {
+      await contactService.markAsRead(messageId);
+      setMessages((prev) =>
+        prev.map((message) =>
+          message.id === messageId ? { ...message, read: true } : message
+        )
+      );
+    } catch {
+      setMessagesError('Could not mark message as read.');
+    }
+  };
 
   if (loading) return <Loading />;
 
@@ -106,6 +130,65 @@ export default function AdminDashboard() {
           ))}
           {surveys.length === 0 && (
             <p className="text-center text-gray-400 text-sm py-8">{t('noSurveysYet')}</p>
+          )}
+        </div>
+      </div>
+
+      <div className="bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700">
+        <div className="px-5 py-4 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
+          <h2 className="font-semibold text-gray-800 dark:text-gray-100">Contact messages</h2>
+          <span className="text-xs text-gray-500 dark:text-gray-400">{messages.length} shown</span>
+        </div>
+
+        {messagesError && (
+          <p className="px-5 py-3 text-sm text-red-600 dark:text-red-400">{messagesError}</p>
+        )}
+
+        <div className="divide-y divide-gray-100 dark:divide-gray-700">
+          {messages.map((message) => (
+            <div key={message.id} className="px-5 py-4">
+              <div className="flex items-start justify-between gap-3">
+                <div>
+                  <p className="text-sm font-semibold text-gray-900 dark:text-gray-100">{message.subject}</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400">
+                    {message.name} ({message.email})
+                  </p>
+                </div>
+                <p className="text-xs text-gray-400 dark:text-gray-500 whitespace-nowrap">
+                  {new Date(message.createdAt).toLocaleString()}
+                </p>
+              </div>
+
+              <p className="mt-2 text-sm text-gray-700 dark:text-gray-200 whitespace-pre-wrap">
+                {message.message}
+              </p>
+
+              <div className="mt-3 flex items-center gap-3">
+                <span
+                  className={`text-xs px-2 py-0.5 rounded-full ${
+                    message.read
+                      ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300'
+                      : 'bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300'
+                  }`}
+                >
+                  {message.read ? 'Read' : 'Unread'}
+                </span>
+
+                {!message.read && (
+                  <button
+                    type="button"
+                    onClick={() => handleMarkAsRead(message.id)}
+                    className="text-xs text-indigo-600 hover:underline"
+                  >
+                    Mark as read
+                  </button>
+                )}
+              </div>
+            </div>
+          ))}
+
+          {messages.length === 0 && !messagesError && (
+            <p className="text-center text-gray-400 text-sm py-8">No contact messages yet</p>
           )}
         </div>
       </div>

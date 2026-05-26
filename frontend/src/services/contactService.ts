@@ -10,6 +10,14 @@ export interface ContactMessage {
   createdAt: string;
 }
 
+export interface ContactMessagePage {
+  content: ContactMessage[];
+  totalElements: number;
+  totalPages: number;
+  number: number;
+  size: number;
+}
+
 export const contactService = {
   async submitMessage(data: {
     name: string;
@@ -21,7 +29,7 @@ export const contactService = {
     return response.data;
   },
 
-  async getMessages(page: number = 0, size: number = 20): Promise<any> {
+  async getMessages(page: number = 0, size: number = 20): Promise<ContactMessagePage> {
     const response = await api.get(`/contact/messages?page=${page}&size=${size}`);
     return response.data;
   },

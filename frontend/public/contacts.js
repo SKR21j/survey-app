@@ -246,32 +246,32 @@
 
       console.log('Number of messages:', messages.length);
 
-      let html = '<h2>Messages</h2>';
+      let html = '<h2 class="messages-title">Messages</h2>';
       
       if (messages.length === 0) {
-        html += '<p style="color: #666; padding: 20px; text-align: center;">No messages yet.</p>';
+        html += '<p class="messages-empty">No messages yet.</p>';
       } else {
-        html += '<div style="max-height: 600px; overflow-y: auto;">';
+        html += '<div class="messages-list">';
         messages.forEach((msg) => {
           const dateStr = new Date(msg.createdAt).toLocaleDateString();
           const timeStr = new Date(msg.createdAt).toLocaleTimeString();
           html += `
-            <div style="border: 1px solid #e5e7eb; padding: 12px; margin-bottom: 12px; border-radius: 6px; background: ${msg.read ? '#f3f4f6' : '#fff9e6'};">
-              <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 8px;">
-                <div>
-                  <strong>${escapeHtml(msg.name)}</strong>
+            <div class="message-card ${msg.read ? 'is-read' : 'is-unread'}">
+              <div class="message-head">
+                <div class="message-sender">
+                  <strong class="message-name">${escapeHtml(msg.name)}</strong>
                   <br/>
-                  <small style="color: #666;">${escapeHtml(msg.email)}</small>
+                  <small class="message-email">${escapeHtml(msg.email)}</small>
                 </div>
-                <small style="color: #999;">${dateStr} ${timeStr}</small>
+                <small class="message-time">${dateStr} ${timeStr}</small>
               </div>
-              <div style="margin-bottom: 8px;">
-                <strong style="color: #1f2937;">${escapeHtml(msg.subject)}</strong>
+              <div class="message-subject-wrap">
+                <strong class="message-subject">${escapeHtml(msg.subject)}</strong>
               </div>
-              <div style="color: #374151; white-space: pre-wrap; word-break: break-word; background: #f9fafb; padding: 8px; border-radius: 4px; margin-bottom: 8px;">
+              <div class="message-body">
                 ${escapeHtml(msg.message)}
               </div>
-              ${!msg.read ? '<div style="font-size: 12px; color: #dc2626;"><strong>🔴 Unread</strong></div>' : '<div style="font-size: 12px; color: #16a34a;"><strong>✓ Read</strong></div>'}
+              ${!msg.read ? '<div class="message-status message-status-unread"><strong>Unread</strong></div>' : '<div class="message-status message-status-read"><strong>Read</strong></div>'}
             </div>
           `;
         });

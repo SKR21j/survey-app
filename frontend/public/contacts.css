@@ -8,6 +8,11 @@
   --accent: #0f7bff;
   --accent-2: #2ea6ff;
   --shadow: 0 18px 40px rgba(15, 62, 130, 0.18);
+  --message-read-bg: #eef2f7;
+  --message-unread-bg: #fff6d8;
+  --message-body-bg: #f7f9fc;
+  --message-meta: #5f6f83;
+  --message-time: #7e8da0;
 }
 
 :root.dark {
@@ -20,6 +25,11 @@
   --accent: #4ba0ff;
   --accent-2: #69beff;
   --shadow: 0 18px 40px rgba(4, 8, 20, 0.5);
+  --message-read-bg: #1f2d41;
+  --message-unread-bg: #3a2e16;
+  --message-body-bg: #182739;
+  --message-meta: #b5c4d7;
+  --message-time: #9fb1c8;
 }
 
 * {
@@ -286,6 +296,100 @@ button:hover {
 
 button:active {
   transform: translateY(0);
+}
+
+.messages-title {
+  margin-bottom: 14px;
+}
+
+.messages-empty {
+  color: var(--message-meta);
+  padding: 20px;
+  text-align: center;
+}
+
+.messages-list {
+  max-height: 600px;
+  overflow-y: auto;
+}
+
+.message-card {
+  border: 1px solid var(--line);
+  padding: 12px;
+  margin-bottom: 12px;
+  border-radius: 10px;
+}
+
+.message-card.is-read {
+  background: var(--message-read-bg);
+}
+
+.message-card.is-unread {
+  background: var(--message-unread-bg);
+}
+
+.message-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 8px;
+  gap: 10px;
+}
+
+.message-sender {
+  min-width: 0;
+}
+
+.message-name {
+  color: var(--ink);
+}
+
+.message-email {
+  color: var(--message-meta);
+}
+
+.message-time {
+  color: var(--message-time);
+  white-space: nowrap;
+}
+
+.message-subject-wrap {
+  margin-bottom: 8px;
+}
+
+.message-subject {
+  color: var(--ink);
+}
+
+.message-body {
+  color: var(--ink);
+  white-space: pre-wrap;
+  word-break: break-word;
+  background: var(--message-body-bg);
+  padding: 8px;
+  border-radius: 6px;
+  margin-bottom: 8px;
+  border: 1px solid var(--line);
+}
+
+.message-status {
+  font-size: 12px;
+}
+
+.message-status-unread {
+  color: #c43f12;
+}
+
+.message-status-read {
+  color: #0f8f4c;
+}
+
+:root.dark .message-status-unread {
+  color: #ffb07a;
+}
+
+:root.dark .message-status-read {
+  color: #7ae3ab;
 }
 
 @media (max-width: 900px) {

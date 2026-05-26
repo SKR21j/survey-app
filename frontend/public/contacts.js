@@ -192,6 +192,34 @@
     }
   }
 
+  async function deleteMessage(messageId) {
+    const token = getToken();
+    if (!token) {
+      console.error('No token found for deleting message');
+      return false;
+    }
+
+    try {
+      const response = await fetch(API_BASE_URL + '/contact/messages/' + messageId, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': 'Bearer ' + token,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (!response.ok) {
+        console.error('Failed to delete message. Status:', response.status);
+        return false;
+      }
+
+      return true;
+    } catch (error) {
+      console.error('Error deleting message:', error);
+      return false;
+    }
+  }
+
   async function submitContactForm(event) {
     event.preventDefault();
 
@@ -271,7 +299,10 @@
               <div class="message-body">
                 ${escapeHtml(msg.message)}
               </div>
-              ${!msg.read ? '<div class="message-status message-status-unread"><strong>Unread</strong></div>' : '<div class="message-status message-status-read"><strong>Read</strong></div>'}
+              <div class="message-footer">
+                ${!msg.read ? '<div class="message-status message-status-unread"><strong>Unread</strong></div>' : '<div class="message-status message-status-read"><strong>Read</strong></div>'}
+                <button type="button" class="message-delete-btn" data-message-id="${msg.id}">Delete</button>
+              </div>
             </div>
           `;
         });
@@ -333,6 +364,41 @@
     if (isAdmin()) {
       console.log('Admin detected. Showing message list...');
       renderMessageList();
+
+      const formWrap = document.querySelector('.form-wrap');
+      if (formWrap) {
+        formWrap.addEventListener('click', async function (event) {
+          const target = event.target;
+          if (!(target instanceof HTMLElement)) {
+            return;
+          }
+
+          const deleteButton = target.closest('.message-delete-btn');
+          if (!(deleteButton instanceof HTMLElement)) {
+            return;
+          }
+
+          const messageId = deleteButton.getAttribute('data-message-id');
+          if (!messageId) {
+            return;
+          }
+
+          const confirmed = window.confirm('Delete this message? This action cannot be undone.');
+          if (!confirmed) {
+            return;
+          }
+
+          deleteButton.setAttribute('disabled', 'disabled');
+          const deleted = await deleteMessage(messageId);
+
+          if (deleted) {
+            renderMessageList();
+          } else {
+            deleteButton.removeAttribute('disabled');
+            alert('Failed to delete message. Please try again.');
+          }
+        });
+      }
       
       // Auto-refresh message list every 5 seconds for admin
       setInterval(renderMessageList, 5000);

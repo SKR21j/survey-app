@@ -10,14 +10,11 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/contact")
@@ -49,5 +46,13 @@ public class ContactMessageController {
     public ResponseEntity<Void> markAsRead(@PathVariable Long id) {
         contactMessageService.markAsRead(id);
         return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/messages/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    @Operation(summary = "Delete a message (Admin only)", security = @SecurityRequirement(name = "bearerAuth"))
+    public ResponseEntity<Void> deleteMessage(@PathVariable Long id) {
+        contactMessageService.deleteMessage(id);
+        return ResponseEntity.noContent().build();
     }
 }

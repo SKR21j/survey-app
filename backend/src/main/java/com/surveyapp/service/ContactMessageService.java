@@ -52,4 +52,16 @@ public class ContactMessageService {
             () -> log.warn("Message not found: {}", messageId)
         );
     }
+
+    @Transactional
+    public void deleteMessage(Long messageId) {
+        log.info("Deleting message: {}", messageId);
+        if (!contactMessageRepository.existsById(messageId)) {
+            log.warn("Message not found for deletion: {}", messageId);
+            return;
+        }
+
+        contactMessageRepository.deleteById(messageId);
+        log.info("Message deleted successfully: {}", messageId);
+    }
 }

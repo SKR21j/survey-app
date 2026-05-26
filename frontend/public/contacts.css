@@ -13,6 +13,8 @@
   --message-body-bg: #f7f9fc;
   --message-meta: #5f6f83;
   --message-time: #7e8da0;
+  --danger: #b91c1c;
+  --danger-strong: #991b1b;
 }
 
 :root.dark {
@@ -30,6 +32,8 @@
   --message-body-bg: #182739;
   --message-meta: #b5c4d7;
   --message-time: #9fb1c8;
+  --danger: #f87171;
+  --danger-strong: #ef4444;
 }
 
 * {
@@ -376,6 +380,13 @@ button:active {
   font-size: 12px;
 }
 
+.message-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
 .message-status-unread {
   color: #c43f12;
 }
@@ -390,6 +401,47 @@ button:active {
 
 :root.dark .message-status-read {
   color: #7ae3ab;
+}
+
+.message-delete-btn {
+  margin-top: 0;
+  border: 1px solid var(--danger);
+  border-radius: 8px;
+  padding: 6px 10px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--danger);
+  background: transparent;
+  cursor: pointer;
+  box-shadow: none;
+}
+
+.message-delete-btn:hover {
+  color: #fff;
+  background: var(--danger);
+  border-color: var(--danger);
+  transform: none;
+  box-shadow: none;
+}
+
+.message-delete-btn:active {
+  transform: none;
+}
+
+.message-delete-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+:root.dark .message-delete-btn {
+  color: var(--danger);
+  border-color: var(--danger-strong);
+}
+
+:root.dark .message-delete-btn:hover {
+  color: #1a1a1a;
+  background: var(--danger);
+  border-color: var(--danger);
 }
 
 @media (max-width: 900px) {

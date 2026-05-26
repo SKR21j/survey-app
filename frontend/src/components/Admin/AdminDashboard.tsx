@@ -82,10 +82,10 @@ export default function AdminDashboard() {
         </Link>
       </div>
 
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         {statCards.map((card) => (
-          <div key={card.label} className={`rounded-lg p-4 ${card.color}`}>
-            <p className="text-2xl font-bold">{card.value}</p>
+          <div key={card.label} className={`rounded-lg p-5 ${card.color}`}>
+            <p className="text-3xl font-bold">{card.value}</p>
             <p className="text-sm mt-1">{card.label}</p>
           </div>
         ))}

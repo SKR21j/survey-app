@@ -23,7 +23,7 @@ export default function AdminDashboard() {
 
   useEffect(() => {
     Promise.all([
-      surveyService.getSurveys().catch(() => [] as Survey[]),
+      surveyService.getSurveys({ page: 0, size: 1000 }).catch(() => [] as Survey[]),
       contactService.getMessages(0, 10).catch(() => null),
     ])
       .then(([surveyData, messagePage]) => {

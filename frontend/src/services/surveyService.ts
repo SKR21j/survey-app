@@ -30,6 +30,7 @@ interface BackendSurvey {
     role?: 'ADMIN' | 'USER';
   };
   responseCount?: number;
+  totalResponses?: number;
   averageRating?: number;
 }
 
@@ -61,7 +62,7 @@ function mapBackendSurvey(s: BackendSurvey): Survey {
     createdAt: s.createdAt,
     updatedAt: s.updatedAt,
     createdBy,
-    responseCount: s.responseCount,
+    responseCount: s.responseCount ?? s.totalResponses,
     averageRating: s.averageRating,
   };
 }
@@ -126,7 +127,19 @@ function mapSurveyFormToBackend(data: Partial<SurveyFormData>) {
 
 export const surveyService = {
   async getSurveys(params?: SurveyListParams): Promise<Survey[]> {
-    const response = await api.get<BackendSurvey[] | PageResponse<BackendSurvey>>('/surveys');
+    const requestParams: Record<string, number> = {};
+
+    if (typeof params?.page === 'number') {
+      requestParams.page = params.page;
+    }
+
+    if (typeof params?.size === 'number') {
+      requestParams.size = params.size;
+    }
+
+    const response = await api.get<BackendSurvey[] | PageResponse<BackendSurvey>>('/surveys', {
+      params: requestParams,
+    });
     const surveys = normalizeSurveyListResponse(response.data);
     return applyClientFilters(surveys, params);
   },

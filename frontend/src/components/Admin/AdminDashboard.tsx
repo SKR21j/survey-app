@@ -11,7 +11,6 @@ interface Stats {
   active: number;
   draft: number;
   closed: number;
-  totalResponses: number;
 }
 
 export default function AdminDashboard() {
@@ -57,14 +56,12 @@ export default function AdminDashboard() {
     active: surveys.filter((s) => s.status === 'ACTIVE').length,
     draft: surveys.filter((s) => s.status === 'DRAFT').length,
     closed: surveys.filter((s) => s.status === 'CLOSED').length,
-    totalResponses: surveys.reduce((acc, s) => acc + (s.responseCount ?? 0), 0),
   };
 
   const statCards = [
     { label: t('totalSurveys'), value: stats.total, color: 'bg-indigo-50 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300' },
     { label: t('active'), value: stats.active, color: 'bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-300' },
     { label: t('draft'), value: stats.draft, color: 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300' },
-    { label: t('totalResponses'), value: stats.totalResponses, color: 'bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300' },
   ];
 
   const getStatusLabel = (status: Survey['status']) => {

@@ -30,27 +30,22 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    if (!token) {
-      setUser(null);
-      setIsLoading(false);
-      return;
+    if (token && !user) {
+      setIsLoading(true);
+      authService
+        .getCurrentUser()
+        .then((u) => {
+          setUser(u);
+          setStoredUser(u);
+        })
+        .catch(() => {
+          removeToken();
+          removeStoredUser();
+          setTokenState(null);
+        })
+        .finally(() => setIsLoading(false));
     }
-
-    setIsLoading(true);
-    authService
-      .getCurrentUser()
-      .then((u) => {
-        setUser(u);
-        setStoredUser(u);
-      })
-      .catch(() => {
-        removeToken();
-        removeStoredUser();
-        setTokenState(null);
-        setUser(null);
-      })
-      .finally(() => setIsLoading(false));
-  }, [token]);
+  }, [token, user]);
 
   const login = useCallback(async (data: LoginRequest) => {
     const res = await authService.login(data);

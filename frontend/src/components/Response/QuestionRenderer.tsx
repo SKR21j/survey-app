@@ -21,7 +21,7 @@ export default function QuestionRenderer({ question, value, onChange }: Question
 
   return (
     <div className="space-y-2">
-      <label className="block text-sm font-medium text-gray-800">
+      <label className="block text-sm font-medium text-gray-800 dark:text-gray-200">
         {text}
         {required && <span className="text-red-500 ml-1">*</span>}
       </label>
@@ -31,7 +31,7 @@ export default function QuestionRenderer({ question, value, onChange }: Question
           value={typeof value === 'string' ? value : ''}
           onChange={(e) => onChange(e.target.value)}
           rows={3}
-          className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          className="w-full border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
           placeholder="Your answer..."
         />
       )}
@@ -39,7 +39,7 @@ export default function QuestionRenderer({ question, value, onChange }: Question
       {type === 'MULTIPLE_CHOICE' && (
         <div className="space-y-2">
           {options.map((opt) => (
-            <label key={opt.id} className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer">
+            <label key={opt.id} className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300 cursor-pointer">
               <input
                 type="radio"
                 name={`q-${question.id}`}
@@ -57,7 +57,7 @@ export default function QuestionRenderer({ question, value, onChange }: Question
       {type === 'CHECKBOX' && (
         <div className="space-y-2">
           {options.map((opt) => (
-            <label key={opt.id} className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer">
+            <label key={opt.id} className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300 cursor-pointer">
               <input
                 type="checkbox"
                 checked={Array.isArray(value) && value.includes(opt.text)}

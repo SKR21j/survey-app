@@ -108,8 +108,8 @@ export default function ResponseForm({ survey }: ResponseFormProps) {
     return (
       <div className="text-center py-16 space-y-5">
         <div className="text-5xl">🎉</div>
-        <h2 className="text-2xl font-bold text-gray-900">{t('thankYou')}</h2>
-        <p className="text-gray-500">{t('responseSubmittedSuccess')}</p>
+        <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">{t('thankYou')}</h2>
+        <p className="text-gray-500 dark:text-gray-400">{t('responseSubmittedSuccess')}</p>
 
         {!ratingSubmitted && (
           <div className="max-w-md mx-auto text-left bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-lg p-4 space-y-3">
@@ -124,7 +124,7 @@ export default function ResponseForm({ survey }: ResponseFormProps) {
               onCommentChange={setRatingComment}
             />
             {ratingError && (
-              <p className="text-sm text-red-600">{ratingError}</p>
+              <p className="text-sm text-red-600 dark:text-red-400">{ratingError}</p>
             )}
             <div className="flex flex-wrap items-center gap-2 pt-1">
               <button
@@ -147,7 +147,7 @@ export default function ResponseForm({ survey }: ResponseFormProps) {
         )}
 
         {ratingSubmitted && (
-          <p className="text-sm text-green-600">{t('thanksForRating')}</p>
+          <p className="text-sm text-green-600 dark:text-green-400">{t('thanksForRating')}</p>
         )}
 
         <button
@@ -163,19 +163,19 @@ export default function ResponseForm({ survey }: ResponseFormProps) {
   return (
     <form onSubmit={handleSubmit} className="max-w-2xl mx-auto space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-gray-900">{survey.title}</h1>
-        <p className="text-gray-500 mt-1">{survey.description}</p>
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">{survey.title}</h1>
+        <p className="text-gray-500 dark:text-gray-400 mt-1">{survey.description}</p>
       </div>
 
       {error && (
-        <div className="p-3 bg-red-50 border border-red-200 text-red-700 rounded-md text-sm">
+        <div className="p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-300 rounded-md text-sm">
           {error}
         </div>
       )}
 
       <div className="space-y-6">
         {survey.questions.map((q) => (
-          <div key={q.id} className="bg-white rounded-lg border border-gray-200 p-5">
+          <div key={q.id} className="bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-800 p-5">
             <QuestionRenderer
               question={q}
               value={answers[q.id] ?? (q.type === 'CHECKBOX' ? [] : q.type === 'SLIDER' ? (q.options[0]?.text ?? '0') : '')}
